@@ -18,7 +18,27 @@
     
     <!-- Dependencies versions -->
 		<junit.version>4.13.2</junit.version>
+		<coveralls.version>4.3.0</coveralls.version>
   </properties>
+  
+  <build>
+    <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>${coveralls.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </pluginManagement>
+  </build>
 
   <dependencies>
     <dependency>
@@ -49,6 +69,17 @@
                 </plugin>
             </plugins>
         </build>
+    </profile>
+    <profile>
+      <id>coveralls</id>
+      <build>
+          <plugins>
+              <plugin>
+                  <groupId>org.eluder.coveralls</groupId>
+                  <artifactId>coveralls-maven-plugin</artifactId>
+              </plugin>
+          </plugins>
+      </build>
     </profile>
   </profiles>
 

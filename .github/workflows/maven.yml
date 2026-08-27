@@ -10,6 +10,7 @@ jobs:
 
     env:
       workdir: com.riccardo.shop
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
 
     name: Build with Java 17 on Linux
 
