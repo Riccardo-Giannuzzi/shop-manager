@@ -1,3 +1,11 @@
+# Maven
 target/
+
+# Java
+*.class
+
+# macOS
 .DS_Store
-.DS_Store?
+
+# Logs
+*.log
