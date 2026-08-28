@@ -19,6 +19,8 @@
     <jacoco.version>0.8.14</jacoco.version>
     <coveralls.version>5.0.0</coveralls.version>
     <sonar.version>5.6.0.6792</sonar.version>
+    <pitest.version>1.25.8</pitest.version>
+    <surefire-report.version>3.5.5</surefire-report.version>
   </properties>
   
   <build>
@@ -49,6 +51,27 @@
           <groupId>org.sonarsource.scanner.maven</groupId>
           <artifactId>sonar-maven-plugin</artifactId>
           <version>${sonar.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.pitest</groupId>
+          <artifactId>pitest-maven</artifactId>
+          <version>${pitest.version}</version>
+          <configuration>
+            <targetClasses>
+              <param>com.riccardo.shop.*</param>
+            </targetClasses>
+            <targetTests>
+              <param>com.riccardo.shop.*</param>
+            </targetTests>
+            <mutators>
+              <mutator>DEFAULTS</mutator>
+            </mutators>
+            <mutationThreshold>100</mutationThreshold>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>${surefire-report.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -91,6 +114,25 @@
                 <phase>verify</phase>
                 <goals>
                   <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>mutation-testing</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
                 </goals>
               </execution>
             </executions>
