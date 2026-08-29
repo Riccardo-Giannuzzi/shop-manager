@@ -21,8 +21,18 @@
     <sonar.version>5.6.0.6792</sonar.version>
     <pitest.version>1.25.8</pitest.version>
     <surefire-report.version>3.5.5</surefire-report.version>
+
+    <!-- JaCoCo exclusions -->
+    <jacoco.exclusions>
+      com/riccardo/shop/model/*
+    </jacoco.exclusions>
+
+    <!-- Sonar coverage exclusions -->
+    <sonar.coverage.exclusions>
+      **/model/*.*
+    </sonar.coverage.exclusions>
   </properties>
-  
+
   <build>
     <pluginManagement>
       <plugins>
@@ -30,6 +40,11 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco.version}</version>
+          <configuration>
+            <excludes>
+              <exclude>${jacoco.exclusions}</exclude>
+            </excludes>
+          </configuration>
           <executions>
             <execution>
               <goals>
@@ -76,7 +91,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -85,7 +100,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>jacoco</id>
