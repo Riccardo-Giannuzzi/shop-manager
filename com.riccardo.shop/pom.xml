@@ -18,9 +18,11 @@
     <junit.version>4.13.2</junit.version>
     <jacoco.version>0.8.15</jacoco.version>
     <coveralls.version>5.0.0</coveralls.version>
-    <sonar.version>5.6.0.6792</sonar.version>
-    <pitest.version>1.25.8</pitest.version>
-    <surefire-report.version>3.5.5</surefire-report.version>
+    <sonar.version>5.7.0.6970</sonar.version>
+    <pitest.version>1.25.9</pitest.version>
+    <surefire-report.version>3.5.6</surefire-report.version>
+    <mockito.version>5.23.0</mockito.version>
+    <assertj-swing.version>3.17.1</assertj-swing.version>
 
     <!-- JaCoCo exclusions -->
     <jacoco.exclusions>
@@ -73,10 +75,12 @@
           <version>${pitest.version}</version>
           <configuration>
             <targetClasses>
-              <param>com.riccardo.shop.*</param>
+              <param>com.riccardo.shop.controller.*</param>
+              <param>com.riccardo.shop.repository.*</param>
             </targetClasses>
             <targetTests>
-              <param>com.riccardo.shop.*</param>
+              <param>com.riccardo.shop.controller.*</param>
+              <param>com.riccardo.shop.repository.*</param>
             </targetTests>
             <mutators>
               <mutator>DEFAULTS</mutator>
@@ -97,6 +101,18 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-swing</artifactId>
+      <version>${assertj-swing.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
