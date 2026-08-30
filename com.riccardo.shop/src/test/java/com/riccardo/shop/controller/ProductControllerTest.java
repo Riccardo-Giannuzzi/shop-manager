@@ -1,7 +1,7 @@
 package com.riccardo.shop.controller;
 
-import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
+import static java.util.Arrays.asList;
 
 import java.util.Collections;
 import java.util.List;

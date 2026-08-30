@@ -10,6 +10,8 @@ public interface CustomerPurchaseView {
 
 	void showCustomerPurchases(List<Purchase> purchases);
 
+	void showError(String message);
+
 	void showError(String message, Customer customer);
 
 	void showError(String message, Purchase purchase);

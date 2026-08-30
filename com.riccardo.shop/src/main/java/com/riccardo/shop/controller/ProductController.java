@@ -21,8 +21,8 @@ public class ProductController {
 	public void allProducts() {
 		try {
 			productView.showAllProducts(productRepository.findAll());
-		} catch (RepositoryException ex) {
-			handleRepositoryException(ex);
+		} catch (RepositoryException e) {
+			handleRepositoryException(e);
 		}
 	}
 
@@ -35,8 +35,8 @@ public class ProductController {
 				return;
 			}
 			productRepository.save(product);
-		} catch (RepositoryException ex) {
-			handleRepositoryException(ex);
+		} catch (RepositoryException e) {
+			handleRepositoryException(e);
 			return;
 		}
 		productView.productAdded(product);
@@ -55,15 +55,15 @@ public class ProductController {
 				return;
 			}
 			productRepository.delete(product.getId());
-		} catch (RepositoryException ex) {
-			handleRepositoryException(ex);
+		} catch (RepositoryException e) {
+			handleRepositoryException(e);
 			return;
 		}
 		productView.productRemoved(product);
 	}
 
-	private void handleRepositoryException(RepositoryException ex) {
-		productView.showError("Exception occurred in repository: " + ex.getMessage());
+	private void handleRepositoryException(RepositoryException e) {
+		productView.showError("Exception occurred in repository: " + e.getMessage());
 	}
 
 }
