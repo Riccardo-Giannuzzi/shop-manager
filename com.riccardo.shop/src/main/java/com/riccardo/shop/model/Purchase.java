@@ -3,37 +3,37 @@ package com.riccardo.shop.model;
 import java.util.Objects;
 
 public class Purchase {
-	private Customer customer;
-	private Product product;
+	private String customerId;
+	private String productId;
 	
 	public Purchase() {
 
 	}
 
-	public Purchase(Customer customer, Product product) {
-		this.customer = customer;
-		this.product = product;
+	public Purchase(String customerId, String productId) {
+		this.customerId = customerId;
+		this.productId = productId;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public String getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
-	public Product getProduct() {
-		return product;
+	public String getProductId() {
+		return productId;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(customer, product);
+		return Objects.hash(customerId, productId);
 	}
 
 	@Override
@@ -48,12 +48,12 @@ public class Purchase {
 			return false;
 		}
 		Purchase other = (Purchase) obj;
-		return Objects.equals(customer, other.customer) && Objects.equals(product, other.product);
+		return Objects.equals(customerId, other.customerId) && Objects.equals(productId, other.productId);
 	}
 
 	@Override
 	public String toString() {
-		return "Purchase [customer=" + customer + ", product=" + product + "]";
+		return "Purchase [customerId=" + customerId + ", productId=" + productId + "]";
 	}
 
 }
