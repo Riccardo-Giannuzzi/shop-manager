@@ -23,6 +23,10 @@ import com.riccardo.shop.view.CustomerPurchaseView;
 
 public class CustomerControllerTest {
 
+	private static final String CUSTOMER_ID = "C1";
+	private static final String CUSTOMER_NAME = "customer_1";
+	private static final String PRODUCT_ID = "P1";
+	
 	@Mock
 	private CustomerPurchaseView customerPurchaseView;
 
@@ -71,24 +75,25 @@ public class CustomerControllerTest {
 
 	@Test
 	public void testNewCustomerWhenCustomerDoesNotAlreadyExist() throws RepositoryException {
-		Customer customer = new Customer("1", "test");
-		when(customerRepository.findById("1"))
+		Customer customerToAdd = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
 			.thenReturn(null);
-		customerController.newCustomer(customer);
+		customerController.newCustomer(customerToAdd);
 		InOrder inOrder = inOrder(customerRepository, customerPurchaseView);
-		inOrder.verify(customerRepository).save(customer);
-		inOrder.verify(customerPurchaseView).customerAdded(customer);
+		inOrder.verify(customerRepository).save(customerToAdd);
+		inOrder.verify(customerPurchaseView).customerAdded(customerToAdd);
 	}
 
 	@Test
 	public void testNewCustomerWhenCustomerAlreadyExists() throws RepositoryException {
-		Customer customerToAdd = new Customer("1", "test");
-		Customer existingCustomer = new Customer("1", "existing");
-		when(customerRepository.findById("1"))
+		String existingCustomerName = "existing";
+		Customer customerToAdd = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		Customer existingCustomer = new Customer(CUSTOMER_ID, existingCustomerName);
+		when(customerRepository.findById(CUSTOMER_ID))
 			.thenReturn(existingCustomer);
 		customerController.newCustomer(customerToAdd);
 		verify(customerPurchaseView)
-			.showError("Already existing customer with id 1", existingCustomer);
+			.showError("Already existing customer with id " + CUSTOMER_ID, existingCustomer);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(customerPurchaseView));
 	}
@@ -96,10 +101,10 @@ public class CustomerControllerTest {
 	@Test
 	public void testNewCustomerWhenFindByIdThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Customer customer = new Customer("1", "test");
+		Customer customerToAdd = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(customerRepository).findById("1");
-		customerController.newCustomer(customer);
+			.when(customerRepository).findById(CUSTOMER_ID);
+		customerController.newCustomer(customerToAdd);
 		verify(customerPurchaseView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
@@ -109,12 +114,12 @@ public class CustomerControllerTest {
 	@Test
 	public void testNewCustomerWhenSaveThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Customer customer = new Customer("1", "test");
-		when(customerRepository.findById("1"))
+		Customer customerToAdd = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
 			.thenReturn(null);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(customerRepository).save(customer);
-		customerController.newCustomer(customer);
+			.when(customerRepository).save(customerToAdd);
+		customerController.newCustomer(customerToAdd);
 		verify(customerPurchaseView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
@@ -123,39 +128,39 @@ public class CustomerControllerTest {
 
 	@Test
 	public void testDeleteCustomerWhenCustomerExistsAndHasNoPurchases() throws RepositoryException {
-		Customer customerToDelete = new Customer("1", "test");
-		when(customerRepository.findById("1"))
+		Customer customerToDelete = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
 			.thenReturn(customerToDelete);
-		when(purchaseRepository.findByCustomerId("1"))
+		when(purchaseRepository.findByCustomerId(CUSTOMER_ID))
 			.thenReturn(Collections.emptyList());
 		customerController.deleteCustomer(customerToDelete);
 		InOrder inOrder = inOrder(customerRepository, customerPurchaseView);
-		inOrder.verify(customerRepository).delete("1");
+		inOrder.verify(customerRepository).delete(CUSTOMER_ID);
 		inOrder.verify(customerPurchaseView).customerRemoved(customerToDelete);
 	}
 
 	@Test
 	public void testDeleteCustomerWhenCustomerDoesNotExist() throws RepositoryException {
-		Customer customer = new Customer("1", "test");
-		when(customerRepository.findById("1"))
+		Customer customerToDelete = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
 			.thenReturn(null);
-		customerController.deleteCustomer(customer);
+		customerController.deleteCustomer(customerToDelete);
 		verify(customerPurchaseView)
-			.showError("No existing customer with id 1", customer);
+			.showError("No existing customer with id " + CUSTOMER_ID, customerToDelete);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(customerPurchaseView));
 	}
 
 	@Test
 	public void testDeleteCustomerWhenCustomerHasPurchases() throws RepositoryException {
-		Customer customer = new Customer("1", "test");
-		when(customerRepository.findById("1"))
-			.thenReturn(customer);
-		when(purchaseRepository.findByCustomerId("1"))
-			.thenReturn(asList(new Purchase("1", "1")));
-		customerController.deleteCustomer(customer);
+		Customer customerToDelete = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
+			.thenReturn(customerToDelete);
+		when(purchaseRepository.findByCustomerId(CUSTOMER_ID))
+			.thenReturn(asList(new Purchase(CUSTOMER_ID, PRODUCT_ID)));
+		customerController.deleteCustomer(customerToDelete);
 		verify(customerPurchaseView)
-			.showError("Customer with id 1 has purchases", customer);
+			.showError("Customer with id " + CUSTOMER_ID + " has purchases", customerToDelete);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(customerPurchaseView));
 	}
@@ -163,10 +168,10 @@ public class CustomerControllerTest {
 	@Test
 	public void testDeleteCustomerWhenFindByIdThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Customer customer = new Customer("1", "test");
+		Customer customerToDelete = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(customerRepository).findById("1");
-		customerController.deleteCustomer(customer);
+			.when(customerRepository).findById(CUSTOMER_ID);
+		customerController.deleteCustomer(customerToDelete);
 		verify(customerPurchaseView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
@@ -176,12 +181,12 @@ public class CustomerControllerTest {
 	@Test
 	public void testDeleteCustomerWhenFindByCustomerIdThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Customer customer = new Customer("1", "test");
-		when(customerRepository.findById("1"))
-			.thenReturn(customer);
+		Customer customerToDelete = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
+			.thenReturn(customerToDelete);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(purchaseRepository).findByCustomerId("1");
-		customerController.deleteCustomer(customer);
+			.when(purchaseRepository).findByCustomerId(CUSTOMER_ID);
+		customerController.deleteCustomer(customerToDelete);
 		verify(customerPurchaseView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));
@@ -191,14 +196,14 @@ public class CustomerControllerTest {
 	@Test
 	public void testDeleteCustomerWhenDeleteThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Customer customer = new Customer("1", "test");
-		when(customerRepository.findById("1"))
-			.thenReturn(customer);
-		when(purchaseRepository.findByCustomerId("1"))
+		Customer customerToDelete = new Customer(CUSTOMER_ID, CUSTOMER_NAME);
+		when(customerRepository.findById(CUSTOMER_ID))
+			.thenReturn(customerToDelete);
+		when(purchaseRepository.findByCustomerId(CUSTOMER_ID))
 			.thenReturn(Collections.emptyList());
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(customerRepository).delete("1");
-		customerController.deleteCustomer(customer);
+			.when(customerRepository).delete(CUSTOMER_ID);
+		customerController.deleteCustomer(customerToDelete);
 		verify(customerPurchaseView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(customerRepository, purchaseRepository));

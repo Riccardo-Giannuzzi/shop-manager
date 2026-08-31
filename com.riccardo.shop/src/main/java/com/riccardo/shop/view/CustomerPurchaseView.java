@@ -8,7 +8,7 @@ import com.riccardo.shop.model.Purchase;
 public interface CustomerPurchaseView {
 	void showAllCustomers(List<Customer> customers);
 
-	void showCustomerPurchases(List<Purchase> purchases);
+	void showAllCustomerPurchases(List<Purchase> purchases);
 
 	void showError(String message);
 

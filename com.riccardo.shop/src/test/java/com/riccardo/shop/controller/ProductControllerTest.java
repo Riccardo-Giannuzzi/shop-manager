@@ -23,6 +23,11 @@ import com.riccardo.shop.view.ProductView;
 
 public class ProductControllerTest {
 
+	private static final String PRODUCT_ID = "P1";
+	private static final String PRODUCT_NAME = "product_1";
+	private static final double PRODUCT_PRICE = 10.0;
+	private static final String CUSTOMER_ID = "C1";
+
 	@Mock
 	private ProductView productView;
 
@@ -65,41 +70,43 @@ public class ProductControllerTest {
 		productController.allProducts();
 		verify(productView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
-		verifyNoMoreInteractions(ignoreStubs(productRepository));
+		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(productView));
 	}
 
 	@Test
 	public void testNewProductWhenProductDoesNotAlreadyExist() throws RepositoryException {
-		Product product = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
+		Product productToAdd = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
 			.thenReturn(null);
-		productController.newProduct(product);
+		productController.newProduct(productToAdd);
 		InOrder inOrder = inOrder(productRepository, productView);
-		inOrder.verify(productRepository).save(product);
-		inOrder.verify(productView).productAdded(product);
+		inOrder.verify(productRepository).save(productToAdd);
+		inOrder.verify(productView).productAdded(productToAdd);
 	}
 
 	@Test
 	public void testNewProductWhenProductAlreadyExists() throws RepositoryException {
-		Product productToAdd = new Product("1", "test", 10.0);
-		Product existingProduct = new Product("1", "existing", 20.0);
-		when(productRepository.findById("1"))
+		String existingProductName = "existing";
+		double existingProductPrice = 20.0;
+		Product productToAdd = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		Product existingProduct = new Product(PRODUCT_ID, existingProductName, existingProductPrice);
+		when(productRepository.findById(PRODUCT_ID))
 			.thenReturn(existingProduct);
 		productController.newProduct(productToAdd);
 		verify(productView)
-			.showError("Already existing product with id 1", existingProduct);
-		verifyNoMoreInteractions(ignoreStubs(productRepository));
+			.showError("Already existing product with id " + PRODUCT_ID, existingProduct);
+		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(productView));
 	}
 
 	@Test
 	public void testNewProductWhenFindByIdThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Product product = new Product("1", "test", 10.0);
+		Product productToAdd = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(productRepository).findById("1");
-		productController.newProduct(product);
+			.when(productRepository).findById(PRODUCT_ID);
+		productController.newProduct(productToAdd);
 		verify(productView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
@@ -109,12 +116,12 @@ public class ProductControllerTest {
 	@Test
 	public void testNewProductWhenSaveThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Product product = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
+		Product productToAdd = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
 			.thenReturn(null);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(productRepository).save(product);
-		productController.newProduct(product);
+			.when(productRepository).save(productToAdd);
+		productController.newProduct(productToAdd);
 		verify(productView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
@@ -123,39 +130,39 @@ public class ProductControllerTest {
 
 	@Test
 	public void testDeleteProductWhenProductExistsAndHasNoPurchases() throws RepositoryException {
-		Product productToDelete = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
+		Product productToDelete = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
 			.thenReturn(productToDelete);
-		when(purchaseRepository.findByProductId("1"))
+		when(purchaseRepository.findByProductId(PRODUCT_ID))
 			.thenReturn(Collections.emptyList());
 		productController.deleteProduct(productToDelete);
 		InOrder inOrder = inOrder(productRepository, productView);
-		inOrder.verify(productRepository).delete("1");
+		inOrder.verify(productRepository).delete(PRODUCT_ID);
 		inOrder.verify(productView).productRemoved(productToDelete);
 	}
 
 	@Test
 	public void testDeleteProductWhenProductDoesNotExist() throws RepositoryException {
-		Product product = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
+		Product productToDelete = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
 			.thenReturn(null);
-		productController.deleteProduct(product);
+		productController.deleteProduct(productToDelete);
 		verify(productView)
-			.showError("No existing product with id 1", product);
+			.showError("No existing product with id " + PRODUCT_ID, productToDelete);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(productView));
 	}
 
 	@Test
 	public void testDeleteProductWhenProductHasPurchases() throws RepositoryException {
-		Product product = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
-			.thenReturn(product);
-		when(purchaseRepository.findByProductId("1"))
-			.thenReturn(asList(new Purchase("1", "1")));
-		productController.deleteProduct(product);
+		Product productToDelete = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
+			.thenReturn(productToDelete);
+		when(purchaseRepository.findByProductId(PRODUCT_ID))
+			.thenReturn(asList(new Purchase(CUSTOMER_ID, PRODUCT_ID)));
+		productController.deleteProduct(productToDelete);
 		verify(productView)
-			.showError("Product with id 1 has purchases", product);
+			.showError("Product with id " + PRODUCT_ID + " has purchases", productToDelete);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
 		verifyNoMoreInteractions(ignoreStubs(productView));
 	}
@@ -163,10 +170,10 @@ public class ProductControllerTest {
 	@Test
 	public void testDeleteProductWhenFindByIdThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Product product = new Product("1", "test", 10.0);
+		Product productToDelete = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(productRepository).findById("1");
-		productController.deleteProduct(product);
+			.when(productRepository).findById(PRODUCT_ID);
+		productController.deleteProduct(productToDelete);
 		verify(productView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
@@ -176,12 +183,12 @@ public class ProductControllerTest {
 	@Test
 	public void testDeleteProductWhenFindByProductIdThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Product product = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
-			.thenReturn(product);
+		Product productToDelete = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
+			.thenReturn(productToDelete);
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(purchaseRepository).findByProductId("1");
-		productController.deleteProduct(product);
+			.when(purchaseRepository).findByProductId(PRODUCT_ID);
+		productController.deleteProduct(productToDelete);
 		verify(productView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
@@ -191,14 +198,14 @@ public class ProductControllerTest {
 	@Test
 	public void testDeleteProductWhenDeleteThrowsException() throws RepositoryException {
 		String exceptionMessage = "Database connection failed";
-		Product product = new Product("1", "test", 10.0);
-		when(productRepository.findById("1"))
-			.thenReturn(product);
-		when(purchaseRepository.findByProductId("1"))
+		Product productToDelete = new Product(PRODUCT_ID, PRODUCT_NAME, PRODUCT_PRICE);
+		when(productRepository.findById(PRODUCT_ID))
+			.thenReturn(productToDelete);
+		when(purchaseRepository.findByProductId(PRODUCT_ID))
 			.thenReturn(Collections.emptyList());
 		doThrow(new RepositoryException(exceptionMessage))
-			.when(productRepository).delete("1");
-		productController.deleteProduct(product);
+			.when(productRepository).delete(PRODUCT_ID);
+		productController.deleteProduct(productToDelete);
 		verify(productView)
 			.showError("Exception occurred in repository: " + exceptionMessage);
 		verifyNoMoreInteractions(ignoreStubs(productRepository, purchaseRepository));
