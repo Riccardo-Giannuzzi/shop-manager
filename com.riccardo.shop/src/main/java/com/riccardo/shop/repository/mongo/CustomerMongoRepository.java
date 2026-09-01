@@ -35,29 +35,21 @@ public class CustomerMongoRepository implements CustomerRepository {
 
 	@Override
 	public List<Customer> findAll() throws RepositoryException {
-		try {
-			return StreamSupport
-					.stream(customerCollection.find().spliterator(), false)
-					.map(this::fromDocumentToCustomer)
-					.collect(Collectors.toList());
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding customers", e);
-		}
+		return StreamSupport
+				.stream(customerCollection.find().spliterator(), false)
+				.map(this::fromDocumentToCustomer)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Customer findById(String id) throws RepositoryException {
-		try {
-			Document document = customerCollection
-					.find(Filters.eq(CUSTOMER_ID_KEY, id))
-					.first();
-			if (document != null) {
-				return fromDocumentToCustomer(document);
-			}
-			return null;
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding customer", e);
+		Document document = customerCollection
+				.find(Filters.eq(CUSTOMER_ID_KEY, id))
+				.first();
+		if (document != null) {
+			return fromDocumentToCustomer(document);
 		}
+		return null;
 	}
 
 	@Override
@@ -74,11 +66,7 @@ public class CustomerMongoRepository implements CustomerRepository {
 
 	@Override
 	public void delete(String id) throws RepositoryException {
-		try {
-			customerCollection.deleteOne(Filters.eq(CUSTOMER_ID_KEY, id));
-		} catch (MongoException e) {
-			throw new RepositoryException("Error deleting customer", e);
-		}
+		customerCollection.deleteOne(Filters.eq(CUSTOMER_ID_KEY, id));
 	}
 
 	private Customer fromDocumentToCustomer(Document document) {

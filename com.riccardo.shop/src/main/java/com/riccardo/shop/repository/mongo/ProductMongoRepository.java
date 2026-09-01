@@ -36,29 +36,21 @@ public class ProductMongoRepository implements ProductRepository {
 
 	@Override
 	public List<Product> findAll() throws RepositoryException {
-		try {
-			return StreamSupport
-					.stream(productCollection.find().spliterator(), false)
-					.map(this::fromDocumentToProduct)
-					.collect(Collectors.toList());
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding products", e);
-		}
+		return StreamSupport
+				.stream(productCollection.find().spliterator(), false)
+				.map(this::fromDocumentToProduct)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Product findById(String id) throws RepositoryException {
-		try {
-			Document document = productCollection
-					.find(Filters.eq(PRODUCT_ID_KEY, id))
-					.first();
-			if (document != null) {
-				return fromDocumentToProduct(document);
-			}
-			return null;
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding product", e);
+		Document document = productCollection
+				.find(Filters.eq(PRODUCT_ID_KEY, id))
+				.first();
+		if (document != null) {
+			return fromDocumentToProduct(document);
 		}
+		return null;
 	}
 
 	@Override
@@ -76,11 +68,7 @@ public class ProductMongoRepository implements ProductRepository {
 
 	@Override
 	public void delete(String id) throws RepositoryException {
-		try {
-			productCollection.deleteOne(Filters.eq(PRODUCT_ID_KEY, id));
-		} catch (MongoException e) {
-			throw new RepositoryException("Error deleting product", e);
-		}
+		productCollection.deleteOne(Filters.eq(PRODUCT_ID_KEY, id));
 	}
 
 	private Product fromDocumentToProduct(Document document) {

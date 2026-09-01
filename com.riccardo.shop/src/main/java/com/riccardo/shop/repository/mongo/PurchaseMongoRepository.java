@@ -35,55 +35,39 @@ public class PurchaseMongoRepository implements PurchaseRepository {
 
 	@Override
 	public List<Purchase> findAll() throws RepositoryException {
-		try {
-			return StreamSupport
-					.stream(purchaseCollection.find().spliterator(), false)
-					.map(this::fromDocumentToPurchase)
-					.collect(Collectors.toList());
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding purchases", e);
-		}
+		return StreamSupport
+				.stream(purchaseCollection.find().spliterator(), false)
+				.map(this::fromDocumentToPurchase)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Purchase> findByCustomerId(String customerId) throws RepositoryException {
-		try {
-			return StreamSupport
-					.stream(purchaseCollection.find(Filters.eq(CUSTOMER_ID_KEY, customerId)).spliterator(), false)
-					.map(this::fromDocumentToPurchase)
-					.collect(Collectors.toList());
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding purchases", e);
-		}
+		return StreamSupport
+				.stream(purchaseCollection.find(Filters.eq(CUSTOMER_ID_KEY, customerId)).spliterator(), false)
+				.map(this::fromDocumentToPurchase)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Purchase> findByProductId(String productId) throws RepositoryException {
-		try {
-			return StreamSupport
-					.stream(purchaseCollection.find(Filters.eq(PRODUCT_ID_KEY, productId)).spliterator(), false)
-					.map(this::fromDocumentToPurchase)
-					.collect(Collectors.toList());
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding purchases", e);
-		}
+		return StreamSupport
+				.stream(purchaseCollection.find(Filters.eq(PRODUCT_ID_KEY, productId)).spliterator(), false)
+				.map(this::fromDocumentToPurchase)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Purchase findByCustomerIdAndProductId(String customerId, String productId) throws RepositoryException {
-		try {
-			Document document = purchaseCollection
-					.find(Filters.and(
-							Filters.eq(CUSTOMER_ID_KEY, customerId),
-							Filters.eq(PRODUCT_ID_KEY, productId)))
-					.first();
-			if (document != null) {
-				return fromDocumentToPurchase(document);
-			}
-			return null;
-		} catch (MongoException e) {
-			throw new RepositoryException("Error finding purchase", e);
+		Document document = purchaseCollection
+				.find(Filters.and(
+						Filters.eq(CUSTOMER_ID_KEY, customerId),
+						Filters.eq(PRODUCT_ID_KEY, productId)))
+				.first();
+		if (document != null) {
+			return fromDocumentToPurchase(document);
 		}
+		return null;
 	}
 
 	@Override
@@ -100,14 +84,10 @@ public class PurchaseMongoRepository implements PurchaseRepository {
 
 	@Override
 	public void delete(String customerId, String productId) throws RepositoryException {
-		try {
-			purchaseCollection.deleteOne(
-					Filters.and(
-							Filters.eq(CUSTOMER_ID_KEY, customerId),
-							Filters.eq(PRODUCT_ID_KEY, productId)));
-		} catch (MongoException e) {
-			throw new RepositoryException("Error deleting purchase", e);
-		}
+		purchaseCollection.deleteOne(
+				Filters.and(
+						Filters.eq(CUSTOMER_ID_KEY, customerId),
+						Filters.eq(PRODUCT_ID_KEY, productId)));
 	}
 
 	private Purchase fromDocumentToPurchase(Document document) {
