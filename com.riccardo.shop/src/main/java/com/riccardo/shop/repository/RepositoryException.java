@@ -8,4 +8,8 @@ public class RepositoryException extends Exception {
 		super(message);
 	}
 
+	public RepositoryException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }
