@@ -21,8 +21,10 @@
     <sonar.version>5.7.0.6970</sonar.version>
     <pitest.version>1.25.9</pitest.version>
     <surefire-report.version>3.5.6</surefire-report.version>
-    <mockito.version>5.23.0</mockito.version>
     <assertj-swing.version>3.17.1</assertj-swing.version>
+    <mockito.version>5.23.0</mockito.version>
+    <mongodb-driver.version>3.12.14</mongodb-driver.version>
+    <mongo-java-server.version>1.11.1</mongo-java-server.version>
 
     <!-- JaCoCo exclusions -->
     <jacoco.exclusions>
@@ -113,6 +115,17 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-swing</artifactId>
       <version>${assertj-swing.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
+      <version>${mongodb-driver.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>de.bwaldvogel</groupId>
+      <artifactId>mongo-java-server</artifactId>
+      <version>${mongo-java-server.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
