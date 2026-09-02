@@ -1,7 +1,6 @@
 package com.riccardo.shop.repository.mongo;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
@@ -38,7 +37,7 @@ public class CustomerMongoRepository implements CustomerRepository {
 		return StreamSupport
 				.stream(customerCollection.find().spliterator(), false)
 				.map(this::fromDocumentToCustomer)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override

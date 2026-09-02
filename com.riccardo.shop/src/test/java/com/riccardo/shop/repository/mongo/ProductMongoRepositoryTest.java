@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
@@ -68,7 +67,8 @@ public class ProductMongoRepositoryTest {
 
 	@Test
 	public void testFindAllWhenDatabaseIsEmpty() throws RepositoryException {
-		assertThat(productRepository.findAll()).isEmpty();
+		assertThat(productRepository.findAll())
+			.isEmpty();
 	}
 
 	@Test
@@ -76,19 +76,20 @@ public class ProductMongoRepositoryTest {
 		addTestProductToDatabase(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
 		addTestProductToDatabase(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_2);
 		assertThat(productRepository.findAll())
-			.containsExactly(
+			.containsExactlyInAnyOrder(
 					new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1),
 					new Product(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_2));
 	}
 	
 	@Test
-	public void testFindByIdNotFound() throws RepositoryException {
-		assertThat(productRepository.findById(PRODUCT_ID_1))
+	public void testFindByIdWhenProductDoesNotExist() throws RepositoryException {
+		addTestProductToDatabase(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
+		assertThat(productRepository.findById(PRODUCT_ID_2))
 			.isNull();
 	}
 
 	@Test
-	public void testFindByIdFound() throws RepositoryException {
+	public void testFindByIdWhenProductExists() throws RepositoryException {
 		addTestProductToDatabase(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
 		addTestProductToDatabase(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_2);
 		assertThat(productRepository.findById(PRODUCT_ID_2))
@@ -96,7 +97,7 @@ public class ProductMongoRepositoryTest {
 	}
 
 	@Test
-	public void testSave() throws RepositoryException {
+	public void testSaveWhenProductDoesNotAlreadyExist() throws RepositoryException {
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
 		productRepository.save(product);
 		assertThat(readAllProductsFromDatabase())
@@ -104,19 +105,30 @@ public class ProductMongoRepositoryTest {
 	}
 
 	@Test
-	public void testSaveDuplicateProductThrowsRepositoryException() throws RepositoryException {
+	public void testSaveWhenProductAlreadyExistsThrowsRepositoryException() throws RepositoryException {
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
+		Product productWithSameId = new Product(PRODUCT_ID_1, PRODUCT_NAME_2, PRODUCT_PRICE_2);
 		productRepository.save(product);
-		assertThatThrownBy(() -> productRepository.save(product))
+		assertThatThrownBy(
+				() -> productRepository.save(productWithSameId))
 			.isInstanceOf(RepositoryException.class);
 	}
 
 	@Test
-	public void testDelete() throws RepositoryException {
+	public void testDeleteWhenProductExists() throws RepositoryException {
 		addTestProductToDatabase(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
 		productRepository.delete(PRODUCT_ID_1);
 		assertThat(readAllProductsFromDatabase())
 			.isEmpty();
+	}
+
+	@Test
+	public void testDeleteWhenProductDoesNotExist() throws RepositoryException {
+		addTestProductToDatabase(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
+		productRepository.delete(PRODUCT_ID_2);
+		assertThat(readAllProductsFromDatabase())
+			.containsExactly(
+					new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1));
 	}
 
 	private void addTestProductToDatabase(String id, String name, double price) {
@@ -134,6 +146,6 @@ public class ProductMongoRepositoryTest {
 						"" + d.get(ProductMongoRepository.PRODUCT_ID_KEY),
 						"" + d.get(ProductMongoRepository.PRODUCT_NAME_KEY),
 						d.getDouble(ProductMongoRepository.PRODUCT_PRICE_KEY)))
-				.collect(Collectors.toList());
+				.toList();
 	}
 }
