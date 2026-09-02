@@ -66,7 +66,8 @@ public class PurchaseMongoRepositoryTest {
 
 	@Test
 	public void testFindAllWhenDatabaseIsEmpty() throws RepositoryException {
-		assertThat(purchaseRepository.findAll()).isEmpty();
+		assertThat(purchaseRepository.findAll())
+			.isEmpty();
 	}
 
 	@Test
@@ -74,53 +75,60 @@ public class PurchaseMongoRepositoryTest {
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_2);
 		assertThat(purchaseRepository.findAll())
-			.containsExactly(
+			.containsExactlyInAnyOrder(
 					new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1),
 					new Purchase(CUSTOMER_ID_2, PRODUCT_ID_2));
 	}
 
 	@Test
-	public void testFindByCustomerIdWhenNoPurchasesFound() throws RepositoryException {
-		assertThat(purchaseRepository.findByCustomerId(CUSTOMER_ID_1))
+	public void testFindByCustomerIdWhenPurchasesDoNotExist() throws RepositoryException {
+		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_2);
+		assertThat(purchaseRepository.findByCustomerId(CUSTOMER_ID_2))
 			.isEmpty();
 	}
 
 	@Test
-	public void testFindByCustomerIdWhenPurchasesFound() throws RepositoryException {
+	public void testFindByCustomerIdWhenPurchasesExist() throws RepositoryException {
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_2);
 		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_1);
 		assertThat(purchaseRepository.findByCustomerId(CUSTOMER_ID_1))
-			.containsExactly(
+			.containsExactlyInAnyOrder(
 					new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1),
 					new Purchase(CUSTOMER_ID_1, PRODUCT_ID_2));
 	}
 
 	@Test
-	public void testFindByProductIdWhenNoPurchasesFound() throws RepositoryException {
-		assertThat(purchaseRepository.findByProductId(PRODUCT_ID_1))
+	public void testFindByProductIdWhenPurchasesDoNotExist() throws RepositoryException {
+		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_1);
+		assertThat(purchaseRepository.findByProductId(PRODUCT_ID_2))
 			.isEmpty();
 	}
 
 	@Test
-	public void testFindByProductIdWhenPurchasesFound() throws RepositoryException {
+	public void testFindByProductIdWhenPurchasesExist() throws RepositoryException {
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_1);
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_2);
 		assertThat(purchaseRepository.findByProductId(PRODUCT_ID_1))
-			.containsExactly(
+			.containsExactlyInAnyOrder(
 					new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1),
 					new Purchase(CUSTOMER_ID_2, PRODUCT_ID_1));
 	}
 
 	@Test
-	public void testFindByCustomerIdAndProductIdWhenPurchaseNotFound() throws RepositoryException {
+	public void testFindByCustomerIdAndProductIdWhenPurchaseDoesNotExist() throws RepositoryException {
+		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_2);
+		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_1);
+		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_2);
 		assertThat(purchaseRepository.findByCustomerIdAndProductId(CUSTOMER_ID_1, PRODUCT_ID_1))
 			.isNull();
 	}
 
 	@Test
-	public void testFindByCustomerIdAndProductIdWhenPurchaseFound() throws RepositoryException {
+	public void testFindByCustomerIdAndProductIdWhenPurchaseExists() throws RepositoryException {
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_2);
 		addTestPurchaseToDatabase(CUSTOMER_ID_2, PRODUCT_ID_1);
@@ -129,7 +137,7 @@ public class PurchaseMongoRepositoryTest {
 	}
 
 	@Test
-	public void testSave() throws RepositoryException {
+	public void testSaveWhenPurchaseDoesNotAlreadyExist() throws RepositoryException {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		purchaseRepository.save(purchase);
 		assertThat(readAllPurchasesFromDatabase())
@@ -137,21 +145,31 @@ public class PurchaseMongoRepositoryTest {
 	}
 
 	@Test
-	public void testSaveDuplicatePurchaseThrowsRepositoryException() throws RepositoryException {
+	public void testSaveWhenPurchaseAlreadyExistsThrowsRepositoryException() throws RepositoryException {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		Purchase purchaseWithSameIds = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		purchaseRepository.save(purchase);
-		assertThatThrownBy(() -> purchaseRepository.save(purchase))
+		assertThatThrownBy(() -> purchaseRepository.save(purchaseWithSameIds))
 			.isInstanceOf(RepositoryException.class);
 	}
 
 	@Test
-	public void testDelete() throws RepositoryException {
+	public void testDeleteWhenPurchaseExists() throws RepositoryException {
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_2);
 		purchaseRepository.delete(CUSTOMER_ID_1, PRODUCT_ID_1);
 		assertThat(readAllPurchasesFromDatabase())
 			.containsExactly(
 					new Purchase(CUSTOMER_ID_1, PRODUCT_ID_2));
+	}
+
+	@Test
+	public void testDeleteWhenPurchaseDoesNotExist() throws RepositoryException {
+		addTestPurchaseToDatabase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		purchaseRepository.delete(CUSTOMER_ID_2, PRODUCT_ID_2);
+		assertThat(readAllPurchasesFromDatabase())
+			.containsExactly(
+					new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1));
 	}
 
 	private void addTestPurchaseToDatabase(String customerId, String productId) {

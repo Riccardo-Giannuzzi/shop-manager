@@ -66,7 +66,8 @@ public class CustomerMongoRepositoryTest {
 
 	@Test
 	public void testFindAllWhenDatabaseIsEmpty() throws RepositoryException {
-		assertThat(customerRepository.findAll()).isEmpty();
+		assertThat(customerRepository.findAll())
+			.isEmpty();
 	}
 
 	@Test
@@ -74,19 +75,20 @@ public class CustomerMongoRepositoryTest {
 		addTestCustomerToDatabase(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		addTestCustomerToDatabase(CUSTOMER_ID_2, CUSTOMER_NAME_2);
 		assertThat(customerRepository.findAll())
-			.containsExactly(
+			.containsExactlyInAnyOrder(
 					new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1),
 					new Customer(CUSTOMER_ID_2, CUSTOMER_NAME_2));
 	}
 
 	@Test
-	public void testFindByIdNotFound() throws RepositoryException {
-		assertThat(customerRepository.findById(CUSTOMER_ID_1))
+	public void testFindByIdWhenCustomerDoesNotExist() throws RepositoryException {
+		addTestCustomerToDatabase(CUSTOMER_ID_1, CUSTOMER_NAME_1);
+		assertThat(customerRepository.findById(CUSTOMER_ID_2))
 			.isNull();
 	}
 
 	@Test
-	public void testFindByIdFound() throws RepositoryException {
+	public void testFindByIdWhenCustomerExists() throws RepositoryException {
 		addTestCustomerToDatabase(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		addTestCustomerToDatabase(CUSTOMER_ID_2, CUSTOMER_NAME_2);
 		assertThat(customerRepository.findById(CUSTOMER_ID_2))
@@ -94,7 +96,7 @@ public class CustomerMongoRepositoryTest {
 	}
 
 	@Test
-	public void testSave() throws RepositoryException {
+	public void testSaveWhenCustomerDoesNotAlreadyExist() throws RepositoryException {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		customerRepository.save(customer);
 		assertThat(readAllCustomersFromDatabase())
@@ -102,19 +104,30 @@ public class CustomerMongoRepositoryTest {
 	}
 
 	@Test
-	public void testSaveDuplicateCustomerThrowsRepositoryException() throws RepositoryException {
+	public void testSaveWhenCustomerAlreadyExistsThrowsRepositoryException() throws RepositoryException {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
+		Customer customerWithSameId = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_2);
 		customerRepository.save(customer);
-		assertThatThrownBy(() -> customerRepository.save(customer))
+		assertThatThrownBy(
+				() -> customerRepository.save(customerWithSameId))
 			.isInstanceOf(RepositoryException.class);
 	}
 
 	@Test
-	public void testDelete() throws RepositoryException {
+	public void testDeleteWhenCustomerExists() throws RepositoryException {
 		addTestCustomerToDatabase(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		customerRepository.delete(CUSTOMER_ID_1);
 		assertThat(readAllCustomersFromDatabase())
 			.isEmpty();
+	}
+
+	@Test
+	public void testDeleteWhenCustomerDoesNotExist() throws RepositoryException {
+		addTestCustomerToDatabase(CUSTOMER_ID_1, CUSTOMER_NAME_1);
+		customerRepository.delete(CUSTOMER_ID_2);
+		assertThat(readAllCustomersFromDatabase())
+			.containsExactly(
+					new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1));
 	}
 
 	private void addTestCustomerToDatabase(String id, String name) {
