@@ -13,6 +13,11 @@ import com.riccardo.shop.repository.RepositoryException;
 
 public class PurchaseMariaRepository implements PurchaseRepository {
 
+	private static final String SELECT = "SELECT ";
+	private static final String WHERE = " WHERE ";
+	private static final String FROM = " FROM ";
+	
+
 	public static final String PURCHASE_TABLE_NAME = "purchase";
 	public static final String CUSTOMER_ID_KEY = "customer_id";
 	public static final String PRODUCT_ID_KEY = "product_id";
@@ -27,8 +32,8 @@ public class PurchaseMariaRepository implements PurchaseRepository {
 	public List<Purchase> findAll() throws RepositoryException {
 		List<Purchase> purchases = new ArrayList<>();
 		String query =
-				"SELECT " + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
-				+ " FROM " + PURCHASE_TABLE_NAME;
+				SELECT + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
+				+ FROM + PURCHASE_TABLE_NAME;
 		try (PreparedStatement statement = connection.prepareStatement(query);
 				ResultSet resultSet = statement.executeQuery()) {
 			while (resultSet.next()) {
@@ -44,9 +49,9 @@ public class PurchaseMariaRepository implements PurchaseRepository {
 	public List<Purchase> findByCustomerId(String customerId) throws RepositoryException {
 		List<Purchase> purchases = new ArrayList<>();
 		String query =
-				"SELECT " + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
-				+ " FROM " + PURCHASE_TABLE_NAME
-				+ " WHERE " + CUSTOMER_ID_KEY + " = ?";
+				SELECT + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
+				+ FROM + PURCHASE_TABLE_NAME
+				+ WHERE + CUSTOMER_ID_KEY + " = ?";
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, customerId);
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -64,9 +69,9 @@ public class PurchaseMariaRepository implements PurchaseRepository {
 	public List<Purchase> findByProductId(String productId) throws RepositoryException {
 		List<Purchase> purchases = new ArrayList<>();
 		String query =
-				"SELECT " + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
-				+ " FROM " + PURCHASE_TABLE_NAME
-				+ " WHERE " + PRODUCT_ID_KEY + " = ?";
+				SELECT + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
+				+ FROM + PURCHASE_TABLE_NAME
+				+ WHERE + PRODUCT_ID_KEY + " = ?";
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, productId);
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -83,9 +88,9 @@ public class PurchaseMariaRepository implements PurchaseRepository {
 	@Override
 	public Purchase findByCustomerIdAndProductId(String customerId, String productId) throws RepositoryException {
 		String query =
-				"SELECT " + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
-				+ " FROM " + PURCHASE_TABLE_NAME
-				+ " WHERE " + CUSTOMER_ID_KEY + " = ?"
+				SELECT + CUSTOMER_ID_KEY + ", " + PRODUCT_ID_KEY
+				+ FROM + PURCHASE_TABLE_NAME
+				+ WHERE + CUSTOMER_ID_KEY + " = ?"
 				+ " AND " + PRODUCT_ID_KEY + " = ?";
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, customerId);
@@ -121,7 +126,7 @@ public class PurchaseMariaRepository implements PurchaseRepository {
 	public void delete(String customerId, String productId) throws RepositoryException {
 		String query =
 				"DELETE FROM " + PURCHASE_TABLE_NAME
-				+ " WHERE " + CUSTOMER_ID_KEY + " = ?"
+				+ WHERE + CUSTOMER_ID_KEY + " = ?"
 				+ " AND " + PRODUCT_ID_KEY + " = ?";
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, customerId);
