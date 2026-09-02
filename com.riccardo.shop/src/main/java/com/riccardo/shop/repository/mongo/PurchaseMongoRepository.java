@@ -1,7 +1,6 @@
 package com.riccardo.shop.repository.mongo;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
@@ -38,7 +37,7 @@ public class PurchaseMongoRepository implements PurchaseRepository {
 		return StreamSupport
 				.stream(purchaseCollection.find().spliterator(), false)
 				.map(this::fromDocumentToPurchase)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override
@@ -46,7 +45,7 @@ public class PurchaseMongoRepository implements PurchaseRepository {
 		return StreamSupport
 				.stream(purchaseCollection.find(Filters.eq(CUSTOMER_ID_KEY, customerId)).spliterator(), false)
 				.map(this::fromDocumentToPurchase)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class PurchaseMongoRepository implements PurchaseRepository {
 		return StreamSupport
 				.stream(purchaseCollection.find(Filters.eq(PRODUCT_ID_KEY, productId)).spliterator(), false)
 				.map(this::fromDocumentToPurchase)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.net.InetSocketAddress;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
@@ -185,6 +184,6 @@ public class PurchaseMongoRepositoryTest {
 				.map(d -> new Purchase(
 						"" + d.get(PurchaseMongoRepository.CUSTOMER_ID_KEY),
 						"" + d.get(PurchaseMongoRepository.PRODUCT_ID_KEY)))
-				.collect(Collectors.toList());
+				.toList();
 	}
 }
