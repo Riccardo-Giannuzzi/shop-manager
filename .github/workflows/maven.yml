@@ -47,12 +47,19 @@ jobs:
         echo "SONARGOAL=sonar:sonar" >> $GITHUB_ENV
       if: ${{ env.SONAR_TOKEN && matrix.java == 17 }}
 
+    - name: Install Xvfb and Openbox
+      run: sudo apt-get update && sudo apt-get install -y xvfb openbox
+
     - name: Build with Maven and SonarCloud
-      run: >
-        mvn verify $JACOCO_OPTION $ADDITIONAL_MAVEN_OPTIONS $SONARGOAL
-        -Dsonar.organization=riccardo-giannuzzi
-        -Dsonar.host.url=https://sonarcloud.io
-        -Dsonar.projectKey=Riccardo-Giannuzzi_shop-manager
+      run: |
+        xvfb-run -a -s "-screen 0 1920x1080x24" bash -c "
+        openbox &
+        sleep 1
+        mvn verify $JACOCO_OPTION $ADDITIONAL_MAVEN_OPTIONS $SONARGOAL \
+          -Dsonar.organization=riccardo-giannuzzi \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.projectKey=Riccardo-Giannuzzi_shop-manager
+        "
       working-directory: ${{ env.workdir }}
 
     - name: Generate JUnit Report

@@ -30,8 +30,7 @@ public class CustomerController {
 		try {
 			Customer existingCustomer = customerRepository.findById(customer.getId());
 			if (existingCustomer != null) {
-				customerPurchaseView.showError("Already existing customer with id " + customer.getId(),
-						existingCustomer);
+				customerPurchaseView.showError("Already existing customer with id " + customer.getId(), existingCustomer);
 				return;
 			}
 			customerRepository.save(customer);
@@ -45,13 +44,11 @@ public class CustomerController {
 	public void deleteCustomer(Customer customer) {
 		try {
 			if (customerRepository.findById(customer.getId()) == null) {
-				customerPurchaseView.showError("No existing customer with id " + customer.getId(),
-						customer);
+				customerPurchaseView.showError("No existing customer with id " + customer.getId(), customer);
 				return;
 			}
 			if (!purchaseRepository.findByCustomerId(customer.getId()).isEmpty()) {
-				customerPurchaseView.showError("Customer with id " + customer.getId() + " has purchases",
-						customer);
+				customerPurchaseView.showError("Customer with id " + customer.getId() + " has purchases", customer);
 				return;
 			}
 			customerRepository.delete(customer.getId());

@@ -1,6 +1,9 @@
 package com.riccardo.shop.controller;
 
+import java.util.List;
+
 import com.riccardo.shop.model.Customer;
+import com.riccardo.shop.model.Product;
 import com.riccardo.shop.model.Purchase;
 import com.riccardo.shop.repository.CustomerRepository;
 import com.riccardo.shop.repository.ProductRepository;
@@ -24,8 +27,20 @@ public class PurchaseController {
 
 	public void allCustomerPurchases(Customer customer) {
 		try {
-			customerPurchaseView.showAllCustomerPurchases(
-					purchaseRepository.findByCustomerId(customer.getId()));
+			customerPurchaseView.showAllCustomerPurchases(purchaseRepository.findByCustomerId(customer.getId()));
+		} catch (RepositoryException e) {
+			handleRepositoryException(e);
+		}
+	}
+
+	public void allCustomerAvailableProducts(Customer customer) {
+		try {
+			List<Product> products = productRepository.findAll();
+			List<Purchase> purchases = purchaseRepository.findByCustomerId(customer.getId());
+			List<Product> availableProducts = products.stream()
+					.filter(product ->purchases.stream()
+							.noneMatch(purchase ->purchase.getProductId().equals(product.getId()))).toList();
+			customerPurchaseView.showAllCustomerAvailableProducts(availableProducts);
 		} catch (RepositoryException e) {
 			handleRepositoryException(e);
 		}
@@ -35,21 +50,17 @@ public class PurchaseController {
 		try {
 			if (customerRepository.findById(purchase.getCustomerId()) == null) {
 				customerPurchaseView.showError(
-						"No existing customer with id " + purchase.getCustomerId(),
-						purchase);
+						"No existing customer with id " + purchase.getCustomerId(),purchase);
 				return;
 			}
 			if (productRepository.findById(purchase.getProductId()) == null) {
 				customerPurchaseView.showError(
-						"No existing product with id " + purchase.getProductId(),
-						purchase);
+						"No existing product with id " + purchase.getProductId(),purchase);
 				return;
 			}
 			if (purchaseRepository.findByCustomerIdAndProductId(purchase.getCustomerId(), purchase.getProductId()) != null) {
 				customerPurchaseView.showError(
-						"Customer " + purchase.getCustomerId()
-								+ " already purchased product " + purchase.getProductId(),
-						purchase);
+						"Customer " + purchase.getCustomerId() + " already purchased product " + purchase.getProductId(),purchase);
 				return;
 			}
 			purchaseRepository.save(purchase);
@@ -66,13 +77,10 @@ public class PurchaseController {
 					purchase.getCustomerId(), purchase.getProductId());
 			if (existingPurchase == null) {
 				customerPurchaseView.showError(
-						"No existing purchase for customer " + purchase.getCustomerId()
-								+ " and product " + purchase.getProductId(),
-						purchase);
+						"No existing purchase for customer " + purchase.getCustomerId() + " and product " + purchase.getProductId(), purchase);
 				return;
 			}
-			purchaseRepository.delete(
-					purchase.getCustomerId(), purchase.getProductId());
+			purchaseRepository.delete(purchase.getCustomerId(), purchase.getProductId());
 		} catch (RepositoryException e) {
 			handleRepositoryException(e);
 			return;
