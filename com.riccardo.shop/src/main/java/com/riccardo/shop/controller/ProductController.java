@@ -30,8 +30,7 @@ public class ProductController {
 		try {
 			Product existingProduct = productRepository.findById(product.getId());
 			if (existingProduct != null) {
-				productView.showError("Already existing product with id " + product.getId(),
-						existingProduct);
+				productView.showError("Already existing product with id " + product.getId(), existingProduct);
 				return;
 			}
 			productRepository.save(product);
@@ -45,13 +44,11 @@ public class ProductController {
 	public void deleteProduct(Product product) {
 		try {
 			if (productRepository.findById(product.getId()) == null) {
-				productView.showError("No existing product with id " + product.getId(),
-						product);
+				productView.showError("No existing product with id " + product.getId(), product);
 				return;
 			}
 			if (!purchaseRepository.findByProductId(product.getId()).isEmpty()) {
-				productView.showError("Product with id " + product.getId() + " has purchases",
-						product);
+				productView.showError("Product with id " + product.getId() + " has purchases", product);
 				return;
 			}
 			productRepository.delete(product.getId());

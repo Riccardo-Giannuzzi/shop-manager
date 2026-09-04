@@ -3,12 +3,15 @@ package com.riccardo.shop.view;
 import java.util.List;
 
 import com.riccardo.shop.model.Customer;
+import com.riccardo.shop.model.Product;
 import com.riccardo.shop.model.Purchase;
 
 public interface CustomerPurchaseView {
 	void showAllCustomers(List<Customer> customers);
 
 	void showAllCustomerPurchases(List<Purchase> purchases);
+	
+	void showAllCustomerAvailableProducts(List<Product> products);
 
 	void showError(String message);
 

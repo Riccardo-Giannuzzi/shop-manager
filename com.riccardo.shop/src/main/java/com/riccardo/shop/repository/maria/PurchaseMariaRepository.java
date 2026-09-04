@@ -16,7 +16,6 @@ public class PurchaseMariaRepository implements PurchaseRepository {
 	private static final String SELECT = "SELECT ";
 	private static final String WHERE = " WHERE ";
 	private static final String FROM = " FROM ";
-	
 
 	public static final String PURCHASE_TABLE_NAME = "purchase";
 	public static final String CUSTOMER_ID_KEY = "customer_id";
