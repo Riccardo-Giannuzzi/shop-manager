@@ -1,5 +1,6 @@
 package com.riccardo.shop.view.swing;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.data.Index.atIndex;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.verify;
@@ -68,6 +69,18 @@ public class ShopSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.requireTitle("Shop Manager");
 		window.tabbedPane().requireTabTitles(CUSTOMERS_PURCHASES_TAB_TITLE, PRODUCTS_TAB_TITLE);
 		window.tabbedPane().requireSelectedTab(atIndex(CUSTOMERS_PURCHASES_TAB_INDEX));
+	}
+	
+	@Test
+	@GUITest
+	public void testShouldCreateProductSwingView() {
+		assertThat(shopSwingView.getProductSwingView()).isNotNull();
+	}
+
+	@Test
+	@GUITest
+	public void testShouldCreateCustomerPurchaseSwingView() {
+		assertThat(shopSwingView.getCustomerPurchaseSwingView()).isNotNull();
 	}
 
 	@Test
