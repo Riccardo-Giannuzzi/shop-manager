@@ -37,7 +37,7 @@ public class ProductSwingView extends JPanel implements ProductView {
 	private JList<Product> listProducts;
 	private DefaultListModel<Product> listProductsModel;
 
-	private ProductController productController;
+	private transient ProductController productController;
 
 	public ProductSwingView() {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -148,7 +148,7 @@ public class ProductSwingView extends JPanel implements ProductView {
 				e -> btnDeleteSelected.setEnabled(listProducts.getSelectedIndex() != -1));
 		listProducts.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		listProducts.setName("productList");
-
+		
 		scrollPane.setViewportView(listProducts);
 		
 		btnDeleteSelected = new JButton("Delete Selected");
@@ -184,7 +184,7 @@ public class ProductSwingView extends JPanel implements ProductView {
 
 	@Override
 	public void showAllProducts(List<Product> products) {
-		products.stream().forEach(listProductsModel::addElement);
+		products.forEach(listProductsModel::addElement);
 	}
 
 	@Override

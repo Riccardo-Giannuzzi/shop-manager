@@ -44,8 +44,8 @@ public class CustomerPurchaseSwingView extends JPanel implements CustomerPurchas
 	private DefaultListModel<Purchase> listPurchasesModel;
 	private DefaultListModel<Product> listAvailableProductsModel;
 
-	private CustomerController customerController;
-	private PurchaseController purchaseController;
+	private transient CustomerController customerController;
+	private transient PurchaseController purchaseController;
 
 	public CustomerPurchaseSwingView() {
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -313,19 +313,19 @@ public class CustomerPurchaseSwingView extends JPanel implements CustomerPurchas
 
 	@Override
 	public void showAllCustomers(List<Customer> customers) {
-		customers.stream().forEach(listCustomersModel::addElement);
+		customers.forEach(listCustomersModel::addElement);
 	}
 
 	@Override
 	public void showAllCustomerPurchases(List<Purchase> purchases) {
 		listPurchasesModel.clear();
-		purchases.stream().forEach(listPurchasesModel::addElement);
+		purchases.forEach(listPurchasesModel::addElement);
 	}
 
 	@Override
 	public void showAllCustomerAvailableProducts(List<Product> products) {
 		listAvailableProductsModel.clear();
-		products.stream().forEach(listAvailableProductsModel::addElement);
+		products.forEach(listAvailableProductsModel::addElement);
 	}
 
 	@Override
@@ -357,21 +357,13 @@ public class CustomerPurchaseSwingView extends JPanel implements CustomerPurchas
 
 	@Override
 	public void purchaseAdded(Purchase purchase) {
-		Customer customer = listCustomers.getSelectedValue();
-		if (customer != null) {
-			purchaseController.allCustomerPurchases(customer);
-			purchaseController.allCustomerAvailableProducts(customer);
-		}
+		refreshSelectedCustomerData();
 		resetErrorLabel();
 	}
 
 	@Override
 	public void purchaseRemoved(Purchase purchase) {
-		Customer customer = listCustomers.getSelectedValue();
-		if (customer != null) {
-			purchaseController.allCustomerPurchases(customer);
-			purchaseController.allCustomerAvailableProducts(customer);
-		}
+		refreshSelectedCustomerData();
 		resetErrorLabel();
 	}
 
@@ -379,4 +371,11 @@ public class CustomerPurchaseSwingView extends JPanel implements CustomerPurchas
 		lblErrorMessage.setText(" ");
 	}
 
+	private void refreshSelectedCustomerData() {
+		Customer customer = listCustomers.getSelectedValue();
+		if (customer != null) {
+			purchaseController.allCustomerPurchases(customer);
+			purchaseController.allCustomerAvailableProducts(customer);
+		}
+	}
 }

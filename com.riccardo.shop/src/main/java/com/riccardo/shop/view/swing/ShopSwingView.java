@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
 
 public class ShopSwingView extends JFrame {
 
@@ -11,7 +12,7 @@ public class ShopSwingView extends JFrame {
 
 	public ShopSwingView(ProductSwingView productSwingView, CustomerPurchaseSwingView customerPurchaseSwingView) {
 		setTitle("Shop Manager");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab("Customers Purchases", customerPurchaseSwingView);
 		tabbedPane.addTab("Products", productSwingView);

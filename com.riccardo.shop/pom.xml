@@ -40,6 +40,24 @@
     <sonar.coverage.exclusions>
       **/model/*.*
     </sonar.coverage.exclusions>
+
+    <!-- Sonar exclusions -->
+    <sonar.issue.ignore.multicriteria>e11,e12</sonar.issue.ignore.multicriteria>
+
+    <!-- Disable rule for "Tests should include assertions": SonarQube is not aware of AssertJ Swing -->
+    <sonar.issue.ignore.multicriteria.e11.ruleKey>
+      java:S2699
+    </sonar.issue.ignore.multicriteria.e11.ruleKey>
+    <sonar.issue.ignore.multicriteria.e11.resourceKey>
+      **/*SwingViewTest.java
+    </sonar.issue.ignore.multicriteria.e11.resourceKey>
+    <!-- Disable naming convention rule for WindowBuilder generated variables -->
+    <sonar.issue.ignore.multicriteria.e12.ruleKey>
+      java:S117
+    </sonar.issue.ignore.multicriteria.e12.ruleKey>
+    <sonar.issue.ignore.multicriteria.e12.resourceKey>
+      **/*SwingView.java
+    </sonar.issue.ignore.multicriteria.e12.resourceKey>
   </properties>
 
   <dependencies>
