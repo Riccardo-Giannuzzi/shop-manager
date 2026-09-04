@@ -80,7 +80,8 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 		closeable.close();
 	}
 
-	@Test @GUITest
+	@Test
+	@GUITest
 	public void testControlsInitialStates() {
 		window.label(JLabelMatcher.withText(ID_LABEL_TEXT));
 		window.textBox(ID_TEXT_BOX_NAME).requireEnabled();
@@ -95,6 +96,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testWhenIdNameAndPriceAreNonEmptyThenAddButtonShouldBeEnabled() {
 		window.textBox(ID_TEXT_BOX_NAME).enterText(PRODUCT_ID_1);
 		window.textBox(NAME_TEXT_BOX_NAME).enterText(PRODUCT_NAME_1);
@@ -103,6 +105,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testWhenEitherIdNameOrPriceAreBlankThenAddButtonShouldBeDisabled() {
 		JTextComponentFixture idTextBox = window.textBox(ID_TEXT_BOX_NAME);
 		JTextComponentFixture nameTextBox = window.textBox(NAME_TEXT_BOX_NAME);
@@ -128,6 +131,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testWhenPriceIsNotANumberThenAddButtonShouldBeDisabled() {
 		window.textBox(ID_TEXT_BOX_NAME).enterText(PRODUCT_ID_1);
 		window.textBox(NAME_TEXT_BOX_NAME).enterText(PRODUCT_NAME_1);
@@ -136,6 +140,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testDeleteButtonShouldBeEnabledOnlyWhenAProductIsSelected() {
 		GuiActionRunner.execute(() -> productSwingView.getListProductsModel().addElement(new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1)));
 		window.list(PRODUCT_LIST_NAME).selectItem(0);
@@ -146,6 +151,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowAllProductsShouldAddProductDescriptionsToTheList() {
 		Product product1 = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
 		Product product2 = new Product(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_VALUE_2);
@@ -159,6 +165,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowErrorShouldShowTheMessageInTheErrorLabel() {
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
 		GuiActionRunner.execute(
@@ -168,6 +175,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowErrorShouldShowTheMessageInTheErrorLabelWithoutProduct() {
 		GuiActionRunner.execute(
 				() -> productSwingView.showError("error message")
@@ -176,6 +184,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testProductAddedShouldAddTheProductToTheListAndResetTheErrorLabel() {
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
 		GuiActionRunner.execute(
@@ -187,6 +196,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testProductRemovedShouldRemoveTheProductFromTheListAndResetTheErrorLabel() {
 		Product product1 = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
 		Product product2 = new Product(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_VALUE_2);
@@ -206,6 +216,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testAddButtonShouldDelegateToProductControllerNewProduct() {
 		window.textBox(ID_TEXT_BOX_NAME).enterText(PRODUCT_ID_1);
 		window.textBox(NAME_TEXT_BOX_NAME).enterText(PRODUCT_NAME_1);
@@ -215,6 +226,7 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testDeleteButtonShouldDelegateToProductControllerDeleteProduct() {
 		Product product1 = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
 		Product product2 = new Product(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_VALUE_2);

@@ -95,7 +95,8 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 		closeable.close();
 	}
 
-	@Test @GUITest
+	@Test
+	@GUITest
 	public void testControlsInitialStates() {
 		window.label(JLabelMatcher.withText(CUSTOMERS_LABEL_TEXT));
 		window.label(JLabelMatcher.withText(ID_LABEL_TEXT));
@@ -115,6 +116,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testWhenIdAndNameAreNonEmptyThenAddButtonShouldBeEnabled() {
 		window.textBox(ID_TEXT_BOX_NAME).enterText(CUSTOMER_ID_1);
 		window.textBox(NAME_TEXT_BOX_NAME).enterText(CUSTOMER_NAME_1);
@@ -122,6 +124,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testWhenEitherIdOrNameIsBlankThenAddButtonShouldBeDisabled() {
 		JTextComponentFixture idTextBox = window.textBox(ID_TEXT_BOX_NAME);
 		JTextComponentFixture nameTextBox = window.textBox(NAME_TEXT_BOX_NAME);
@@ -136,6 +139,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 	
 	@Test
+	@GUITest
 	public void testCustomerControlsShouldBeEnabledOnlyWhenACustomerIsSelected() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		GuiActionRunner.execute(
@@ -152,6 +156,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowAllCustomersShouldAddCustomerDescriptionsToTheList() {
 		Customer customer1 = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Customer customer2 = new Customer(CUSTOMER_ID_2, CUSTOMER_NAME_2);
@@ -167,6 +172,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowErrorShouldShowTheMessageInTheErrorLabel() {
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.showError("error message")
@@ -175,6 +181,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowErrorWithCustomerShouldShowTheMessageInTheErrorLabel() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		GuiActionRunner.execute(
@@ -184,6 +191,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowErrorWithPurchaseShouldShowTheMessageInTheErrorLabel() {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		GuiActionRunner.execute(
@@ -193,6 +201,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testCustomerAddedShouldAddTheCustomerToTheListAndResetTheErrorLabel() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		GuiActionRunner.execute(
@@ -204,6 +213,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testCustomerRemovedShouldRemoveTheCustomerFromTheListAndResetTheErrorLabel() {
 		Customer customer1 = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Customer customer2 = new Customer(CUSTOMER_ID_2, CUSTOMER_NAME_2);
@@ -223,6 +233,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testAddButtonShouldDelegateToCustomerControllerNewCustomer() {
 		window.textBox(ID_TEXT_BOX_NAME).enterText(CUSTOMER_ID_1);
 		window.textBox(NAME_TEXT_BOX_NAME).enterText(CUSTOMER_NAME_1);
@@ -231,6 +242,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testDeleteButtonShouldDelegateToCustomerControllerDeleteCustomer() {
 		Customer customer1 = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Customer customer2 = new Customer(CUSTOMER_ID_2, CUSTOMER_NAME_2);
@@ -242,12 +254,12 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(1);
-		robot().waitForIdle();
 		window.button(JButtonMatcher.withText(DELETE_SELECTED_BUTTON_TEXT)).click();
 		verify(customerController).deleteCustomer(customer2);
 	}
 
 	@Test
+	@GUITest
 	public void testCustomerSelectionShouldDelegateToPurchaseControllerAllCustomerAvailableProducts() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		GuiActionRunner.execute(
@@ -258,6 +270,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowAllCustomerAvailableProductsShouldReplaceProductsInTheList() {
 		Product product1 = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
 		Product product2 = new Product(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_2);
@@ -272,6 +285,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testCustomerSelectionShouldDelegateToPurchaseControllerAllCustomerPurchases() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		GuiActionRunner.execute(
@@ -282,6 +296,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShowAllCustomerPurchasesShouldReplacePurchasesInTheList() {
 		Purchase purchase1 = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		Purchase purchase2 = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_2);
@@ -296,6 +311,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testAddPurchaseButtonShouldBeEnabledOnlyWhenAnAvailableProductIsSelected() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
@@ -313,6 +329,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testDeletePurchaseButtonShouldBeEnabledOnlyWhenAPurchaseIsSelected() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
@@ -323,7 +340,6 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
-		robot().waitForIdle();
 		window.list(PURCHASE_LIST_NAME).selectItem(0);
 		window.button(JButtonMatcher.withText(DELETE_PURCHASE_BUTTON_TEXT)).requireEnabled();
 		window.list(PURCHASE_LIST_NAME).clearSelection();
@@ -331,6 +347,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testPurchaseButtonsShouldBeDisabledWhenCustomerSelectionIsCleared() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
@@ -353,6 +370,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testAddPurchaseButtonShouldDelegateToPurchaseControllerNewPurchase() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
@@ -369,6 +387,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testDeletePurchaseButtonShouldDelegateToPurchaseControllerDeletePurchase() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Purchase purchase1 = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
@@ -380,13 +399,13 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
-		robot().waitForIdle();
 		window.list(PURCHASE_LIST_NAME).selectItem(1);
 		window.button(JButtonMatcher.withText(DELETE_PURCHASE_BUTTON_TEXT)).click();
 		verify(purchaseController).deletePurchase(purchase2);
 	}
 
 	@Test
+	@GUITest
 	public void testPurchaseAddedShouldRefreshCustomerDataAndResetErrorLabel() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
@@ -397,7 +416,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
-		robot().waitForIdle();
+
 		clearInvocations(purchaseController);
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.purchaseAdded(purchase)
@@ -408,6 +427,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testPurchaseRemovedShouldRefreshCustomerDataAndResetErrorLabel() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
@@ -428,6 +448,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testPurchaseAddedShouldNotRefreshCustomerDataWhenNoCustomerIsSelected() {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		GuiActionRunner.execute(
@@ -437,6 +458,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testPurchaseRemovedShouldNotRefreshCustomerDataWhenNoCustomerIsSelected() {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		GuiActionRunner.execute(

@@ -34,7 +34,8 @@ public class ShopSwingViewTest extends AssertJSwingJUnitTestCase {
 		window.show();
 	}
 
-	@Test @GUITest
+	@Test 
+	@GUITest
 	public void testControlsInitialStates() {
 		window.requireTitle("Shop Manager");
 		window.tabbedPane().requireTabTitles(CUSTOMERS_PURCHASES_TAB_TITLE,PRODUCTS_TAB_TITLE);
@@ -42,6 +43,7 @@ public class ShopSwingViewTest extends AssertJSwingJUnitTestCase {
 	}
 
 	@Test
+	@GUITest
 	public void testShouldSwitchBetweenTabs() {
 		window.tabbedPane().selectTab(PRODUCTS_TAB_INDEX);
 		window.tabbedPane().requireSelectedTab(atIndex(PRODUCTS_TAB_INDEX));
