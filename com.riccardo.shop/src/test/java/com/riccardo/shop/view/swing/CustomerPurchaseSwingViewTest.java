@@ -416,7 +416,6 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
-
 		clearInvocations(purchaseController);
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.purchaseAdded(purchase)
