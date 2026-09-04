@@ -108,9 +108,7 @@ public class ShopSwingViewTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testShouldSwitchTabsBeforeControllersAreSet() {
-		ShopSwingView view = GuiActionRunner.execute(
-				() -> new ShopSwingView()
-		);
+		ShopSwingView view = GuiActionRunner.execute(ShopSwingView::new);
 		FrameFixture viewWindow = new FrameFixture(robot(), view);
 		viewWindow.show();
 		viewWindow.tabbedPane().selectTab(PRODUCTS_TAB_INDEX);
