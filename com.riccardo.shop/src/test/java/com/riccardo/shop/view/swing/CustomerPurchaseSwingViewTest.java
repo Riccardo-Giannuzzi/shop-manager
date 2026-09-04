@@ -242,6 +242,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(1);
+		robot().waitForIdle();
 		window.button(JButtonMatcher.withText(DELETE_SELECTED_BUTTON_TEXT)).click();
 		verify(customerController).deleteCustomer(customer2);
 	}
@@ -322,6 +323,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
+		robot().waitForIdle();
 		window.list(PURCHASE_LIST_NAME).selectItem(0);
 		window.button(JButtonMatcher.withText(DELETE_PURCHASE_BUTTON_TEXT)).requireEnabled();
 		window.list(PURCHASE_LIST_NAME).clearSelection();
@@ -378,6 +380,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
+		robot().waitForIdle();
 		window.list(PURCHASE_LIST_NAME).selectItem(1);
 		window.button(JButtonMatcher.withText(DELETE_PURCHASE_BUTTON_TEXT)).click();
 		verify(purchaseController).deletePurchase(purchase2);
@@ -394,6 +397,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
+		robot().waitForIdle();
 		clearInvocations(purchaseController);
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.purchaseAdded(purchase)
