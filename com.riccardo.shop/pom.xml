@@ -26,7 +26,7 @@
     <mockito.version>5.23.0</mockito.version>
     <mongodb-driver.version>3.12.14</mongodb-driver.version>
     <mongo-java-server.version>1.11.1</mongo-java-server.version>
-    <testcontainers.version>1.21.3</testcontainers.version>
+    <testcontainers.version>1.21.4</testcontainers.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
     <mariadb-java-client.version>3.5.10</mariadb-java-client.version>
