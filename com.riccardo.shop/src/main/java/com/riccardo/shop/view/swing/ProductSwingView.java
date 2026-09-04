@@ -184,6 +184,7 @@ public class ProductSwingView extends JPanel implements ProductView {
 
 	@Override
 	public void showAllProducts(List<Product> products) {
+		listProductsModel.clear();
 		products.forEach(listProductsModel::addElement);
 	}
 

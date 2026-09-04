@@ -166,6 +166,21 @@ public class ProductSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
+	public void testShowAllProductsShouldReplaceProductsInTheList() {
+		Product product1 = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
+		Product product2 = new Product(PRODUCT_ID_2, PRODUCT_NAME_2, PRODUCT_PRICE_VALUE_2);
+		GuiActionRunner.execute(
+				() -> {
+					productSwingView.showAllProducts(Arrays.asList(product1));
+					productSwingView.showAllProducts(Arrays.asList(product2));
+				}
+		);
+		String[] listContents = window.list(PRODUCT_LIST_NAME).contents();
+		assertThat(listContents).containsExactly(product2.toString());
+	}
+
+	@Test
+	@GUITest
 	public void testShowErrorShouldShowTheMessageInTheErrorLabel() {
 		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_VALUE_1);
 		GuiActionRunner.execute(

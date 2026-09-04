@@ -164,11 +164,39 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 				() -> customerPurchaseSwingView.showAllCustomers(Arrays.asList(customer1, customer2))
 		);
 		String[] listContents = window.list(CUSTOMER_LIST_NAME).contents();
-		assertThat(listContents)
-			.containsExactly(
-					customer1.toString(),
-					customer2.toString()
-			);
+		assertThat(listContents).containsExactly(customer1.toString(), customer2.toString());
+	}
+
+	@Test
+	@GUITest
+	public void testShowAllCustomersShouldReplaceCustomersInTheList() {
+		Customer customer1 = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
+		Customer customer2 = new Customer(CUSTOMER_ID_2, CUSTOMER_NAME_2);
+		GuiActionRunner.execute(
+				() -> {
+					customerPurchaseSwingView.showAllCustomers(Arrays.asList(customer1));
+					customerPurchaseSwingView.showAllCustomers(Arrays.asList(customer2));
+				}
+		);
+		String[] listContents = window.list(CUSTOMER_LIST_NAME).contents();
+		assertThat(listContents).containsExactly(customer2.toString());
+	}
+
+	@Test
+	@GUITest
+	public void testShowAllCustomersShouldClearCustomerDependentLists() {
+		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
+		Product product = new Product(PRODUCT_ID_1, PRODUCT_NAME_1, PRODUCT_PRICE_1);
+		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		GuiActionRunner.execute(
+				() -> {
+					customerPurchaseSwingView.showAllCustomerAvailableProducts(Arrays.asList(product));
+					customerPurchaseSwingView.showAllCustomerPurchases(Arrays.asList(purchase));
+					customerPurchaseSwingView.showAllCustomers(Arrays.asList(customer));
+				}
+		);
+		assertThat(window.list(PURCHASE_LIST_NAME).contents()).isEmpty();
+		assertThat(window.list(AVAILABLE_PRODUCT_LIST_NAME).contents()).isEmpty();
 	}
 
 	@Test
@@ -406,7 +434,7 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void testPurchaseAddedShouldRefreshCustomerDataAndResetErrorLabel() {
+	public void testPurchaseAddedShouldAddPurchaseRefreshAvailableProductsAndResetErrorLabel() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		GuiActionRunner.execute(
@@ -420,49 +448,57 @@ public class CustomerPurchaseSwingViewTest extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.purchaseAdded(purchase)
 		);
-		verify(purchaseController).allCustomerPurchases(customer);
+		assertThat(window.list(PURCHASE_LIST_NAME).contents()).containsExactly(purchase.toString());
 		verify(purchaseController).allCustomerAvailableProducts(customer);
 		window.label(ERROR_MESSAGE_LABEL_NAME).requireText(" ");
 	}
 
 	@Test
 	@GUITest
-	public void testPurchaseRemovedShouldRefreshCustomerDataAndResetErrorLabel() {
+	public void testPurchaseRemovedShouldRemovePurchaseRefreshAvailableProductsAndResetErrorLabel() {
 		Customer customer = new Customer(CUSTOMER_ID_1, CUSTOMER_NAME_1);
-		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		Purchase purchase1 = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		Purchase purchase2 = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_2);
 		GuiActionRunner.execute(
 				() -> {
 					customerPurchaseSwingView.getListCustomersModel().addElement(customer);
+					customerPurchaseSwingView.showAllCustomerPurchases(Arrays.asList(purchase1, purchase2)
+					);
 					customerPurchaseSwingView.showError("error message");
 				}
 		);
 		window.list(CUSTOMER_LIST_NAME).selectItem(0);
 		clearInvocations(purchaseController);
 		GuiActionRunner.execute(
-				() -> customerPurchaseSwingView.purchaseRemoved(purchase)
+				() -> customerPurchaseSwingView.purchaseRemoved(purchase1)
 		);
-		verify(purchaseController).allCustomerPurchases(customer);
+		assertThat(window.list(PURCHASE_LIST_NAME).contents()).containsExactly(purchase2.toString());
 		verify(purchaseController).allCustomerAvailableProducts(customer);
 		window.label(ERROR_MESSAGE_LABEL_NAME).requireText(" ");
 	}
 
 	@Test
 	@GUITest
-	public void testPurchaseAddedShouldNotRefreshCustomerDataWhenNoCustomerIsSelected() {
+	public void testPurchaseAddedShouldNotRefreshAvailableProductsWhenNoCustomerIsSelected() {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.purchaseAdded(purchase)
 		);
+		assertThat(window.list(PURCHASE_LIST_NAME).contents()).containsExactly(purchase.toString());
 		verifyNoInteractions(purchaseController);
 	}
 
 	@Test
 	@GUITest
-	public void testPurchaseRemovedShouldNotRefreshCustomerDataWhenNoCustomerIsSelected() {
+	public void testPurchaseRemovedShouldNotRefreshAvailableProductsWhenNoCustomerIsSelected() {
 		Purchase purchase = new Purchase(CUSTOMER_ID_1, PRODUCT_ID_1);
+		GuiActionRunner.execute(
+				() -> customerPurchaseSwingView.showAllCustomerPurchases(Arrays.asList(purchase))
+		);
 		GuiActionRunner.execute(
 				() -> customerPurchaseSwingView.purchaseRemoved(purchase)
 		);
+		assertThat(window.list(PURCHASE_LIST_NAME).contents()).isEmpty();
 		verifyNoInteractions(purchaseController);
 	}
 }
