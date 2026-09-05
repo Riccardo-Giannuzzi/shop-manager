@@ -61,7 +61,6 @@ public class ShopSwingView extends JFrame {
 	public void setCustomerController(CustomerController customerController) {
 		this.customerController = customerController;
 		customerPurchaseSwingView.setCustomerController(customerController);
-		customerController.allCustomers();
 	}
 
 	public void setPurchaseController(PurchaseController purchaseController) {

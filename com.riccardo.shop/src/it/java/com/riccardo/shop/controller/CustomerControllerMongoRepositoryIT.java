@@ -27,6 +27,10 @@ public class CustomerControllerMongoRepositoryIT {
 	private static final String CUSTOMER_ID = "C1";
 	private static final String CUSTOMER_NAME = "customer1";
 
+	public static final String SHOP_DB_NAME = "shop";
+	public static final String CUSTOMER_COLLECTION_NAME = "customer";
+	public static final String PURCHASE_COLLECTION_NAME = "purchase";
+
 	@ClassRule
 	public static final MongoDBContainer mongo = new MongoDBContainer("mongo:5");
 
@@ -51,10 +55,10 @@ public class CustomerControllerMongoRepositoryIT {
 						mongo.getFirstMappedPort()
 				)
 		);
-		MongoDatabase database = client.getDatabase(CustomerMongoRepository.SHOP_DB_NAME);
+		MongoDatabase database = client.getDatabase(SHOP_DB_NAME);
 		database.drop();
-		customerRepository = new CustomerMongoRepository(client);
-		purchaseRepository = new PurchaseMongoRepository(client);
+		customerRepository = new CustomerMongoRepository(client, SHOP_DB_NAME, CUSTOMER_COLLECTION_NAME);
+		purchaseRepository = new PurchaseMongoRepository(client, SHOP_DB_NAME, PURCHASE_COLLECTION_NAME);
 		customerController = new CustomerController(customerPurchaseView, customerRepository, purchaseRepository
 		);
 	}

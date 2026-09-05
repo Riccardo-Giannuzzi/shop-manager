@@ -20,14 +20,13 @@ public class ProductMongoRepository implements ProductRepository {
 	public static final String PRODUCT_ID_KEY = "id";
 	public static final String PRODUCT_NAME_KEY = "name";
 	public static final String PRODUCT_PRICE_KEY = "price";
-	public static final String SHOP_DB_NAME = "shop";
-	public static final String PRODUCT_COLLECTION_NAME = "product";
+
 	private MongoCollection<Document> productCollection;
 
-	public ProductMongoRepository(MongoClient client) {
+	public ProductMongoRepository(MongoClient client, String databaseName, String collectionName) {
 		productCollection = client
-			.getDatabase(SHOP_DB_NAME)
-			.getCollection(PRODUCT_COLLECTION_NAME);
+			.getDatabase(databaseName)
+			.getCollection(collectionName);
 		productCollection.createIndex(
 				Indexes.ascending(PRODUCT_ID_KEY),
 				new IndexOptions().unique(true));

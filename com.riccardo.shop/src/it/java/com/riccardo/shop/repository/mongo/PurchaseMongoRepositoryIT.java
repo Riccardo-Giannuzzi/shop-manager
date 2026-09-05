@@ -27,6 +27,10 @@ public class PurchaseMongoRepositoryIT {
 	private static final String PRODUCT_ID_1 = "P1";
 	private static final String PRODUCT_ID_2 = "P2";
 
+	public static final String SHOP_DB_NAME = "shop";
+	public static final String PURCHASE_COLLECTION_NAME = "purchase";
+
+
 	@ClassRule
 	public static final MongoDBContainer mongo = new MongoDBContainer("mongo:5");
 
@@ -40,10 +44,10 @@ public class PurchaseMongoRepositoryIT {
 				new ServerAddress(
 						mongo.getHost(),
 						mongo.getFirstMappedPort()));
-		MongoDatabase database = client.getDatabase(PurchaseMongoRepository.SHOP_DB_NAME);
+		MongoDatabase database = client.getDatabase(SHOP_DB_NAME);
 		database.drop();
-		purchaseRepository = new PurchaseMongoRepository(client);
-		purchaseCollection = database.getCollection(PurchaseMongoRepository.PURCHASE_COLLECTION_NAME);
+		purchaseRepository = new PurchaseMongoRepository(client, SHOP_DB_NAME, PURCHASE_COLLECTION_NAME);
+		purchaseCollection = database.getCollection(PURCHASE_COLLECTION_NAME);
 	}
 
 	@After

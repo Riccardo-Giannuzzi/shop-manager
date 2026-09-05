@@ -46,6 +46,10 @@ public class ProductSwingViewMongoRepositoryIT extends AssertJSwingJUnitTestCase
 	private static final String NAME_TEXT_BOX_NAME = "nameTextBox";
 	private static final String ID_TEXT_BOX_NAME = "idTextBox";
 
+	public static final String SHOP_DB_NAME = "shop";
+	public static final String PRODUCT_COLLECTION_NAME = "product";
+	public static final String PURCHASE_COLLECTION_NAME = "purchase";
+
 	@ClassRule
 	public static final MongoDBContainer mongo =
 			new MongoDBContainer("mongo:5");
@@ -64,10 +68,10 @@ public class ProductSwingViewMongoRepositoryIT extends AssertJSwingJUnitTestCase
 	@Override
 	protected void onSetUp() {
 		client = new MongoClient(new ServerAddress(mongo.getHost(), mongo.getFirstMappedPort()));
-		MongoDatabase database = client.getDatabase(ProductMongoRepository.SHOP_DB_NAME);
+		MongoDatabase database = client.getDatabase(SHOP_DB_NAME);
 		database.drop();
-		productRepository = new ProductMongoRepository(client);
-		purchaseRepository = new PurchaseMongoRepository(client);
+		productRepository = new ProductMongoRepository(client, SHOP_DB_NAME, PRODUCT_COLLECTION_NAME);
+		purchaseRepository = new PurchaseMongoRepository(client,SHOP_DB_NAME, PURCHASE_COLLECTION_NAME);
 		GuiActionRunner.execute(
 				() -> {
 					productSwingView = new ProductSwingView();
