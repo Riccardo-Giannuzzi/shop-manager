@@ -33,7 +33,7 @@
     <pitest.version>1.25.9</pitest.version>
     <maven-surefire.version>3.5.6</maven-surefire.version>
     <surefire-report.version>3.5.6</surefire-report.version>
-    <maven-failsafe.version>3.5.6</maven-failsafe.version>
+    <maven-failsafe.version>3.6.0</maven-failsafe.version>
     <build-helper-maven.version>3.6.1</build-helper-maven.version>
     <maven-assembly.version>3.7.1</maven-assembly.version>
     <docker-maven.version>0.48.1</docker-maven.version>
