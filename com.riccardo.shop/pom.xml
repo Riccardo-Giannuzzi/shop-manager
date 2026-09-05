@@ -24,6 +24,7 @@
     <mariadb-java-client.version>3.5.10</mariadb-java-client.version>
     <cucumber.version>5.5.0</cucumber.version>
     <picocli.version>4.7.7</picocli.version>
+    <log4j.version>2.24.3</log4j.version>
 
     <!-- Plugin versions -->
     <jacoco.version>0.8.15</jacoco.version>
@@ -44,7 +45,8 @@
 
     <!-- Sonar coverage exclusions -->
     <sonar.coverage.exclusions>
-      **/model/*.*, **/app/*.*
+      **/model/*.*,
+      **/app/swing/*.*
     </sonar.coverage.exclusions>
 
     <!-- Sonar exclusions -->
@@ -135,6 +137,16 @@
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
       <version>${picocli.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
     </dependency>
   </dependencies>
 

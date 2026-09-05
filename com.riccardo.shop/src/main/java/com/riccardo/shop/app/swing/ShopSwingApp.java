@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.riccardo.shop.controller.CustomerController;
@@ -28,8 +31,14 @@ import picocli.CommandLine.Option;
 @Command(mixinStandardHelpOptions = true)
 public class ShopSwingApp implements Callable<Void> {
 
+	private static final Logger LOGGER = LogManager.getLogger(ShopSwingApp.class);
+
+	private static final String TYPE_MARIA = "maria";
+
+	private static final String TYPE_MONGO = "mongo";
+
 	@Option(names = { "--db-type" }, description = "Database type: mongo or maria")
-	private String databaseType = "mongo";
+	private String databaseType = TYPE_MONGO;
 
 	@Option(names = { "--mongo-host" }, description = "MongoDB host address")
 	private String mongoHost = "localhost";
@@ -56,7 +65,7 @@ public class ShopSwingApp implements Callable<Void> {
 	private String mariaUser = "root";
 
 	@Option(names = { "--maria-password" }, description = "MariaDB password")
-	private String mariaPassword = "";
+	private String mariaPassword = "password";
 
 	public static void main(String[] args) {
 		new CommandLine(new ShopSwingApp()).execute(args);
@@ -64,7 +73,7 @@ public class ShopSwingApp implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
-		if (!"mongo".equalsIgnoreCase(databaseType) && !"maria".equalsIgnoreCase(databaseType)) {
+		if (!TYPE_MONGO.equalsIgnoreCase(databaseType) && !TYPE_MARIA.equalsIgnoreCase(databaseType)) {
 			throw new IllegalArgumentException("Unknown database type: " + databaseType);
 		}
 		EventQueue.invokeLater(() -> {
@@ -72,7 +81,7 @@ public class ShopSwingApp implements Callable<Void> {
 				CustomerRepository customerRepository;
 				ProductRepository productRepository;
 				PurchaseRepository purchaseRepository;
-				if ("mongo".equalsIgnoreCase(databaseType)) {
+				if (TYPE_MONGO.equalsIgnoreCase(databaseType)) {
 					MongoClient mongoClient = new MongoClient(new ServerAddress(mongoHost, mongoPort));
 					customerRepository = new CustomerMongoRepository(mongoClient, databaseName, customerCollectionName);
 					productRepository = new ProductMongoRepository(mongoClient, databaseName, productCollectionName);
@@ -93,7 +102,7 @@ public class ShopSwingApp implements Callable<Void> {
 				customerController.allCustomers();
 				shopSwingView.setVisible(true);
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error(e.getMessage());
 			}
 		});
 		return null;
