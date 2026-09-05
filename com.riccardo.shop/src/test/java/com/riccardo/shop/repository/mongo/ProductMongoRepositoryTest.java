@@ -33,6 +33,9 @@ public class ProductMongoRepositoryTest {
 	private static final String PRODUCT_NAME_2 = "product_2";
 	private static final double PRODUCT_PRICE_2 = 20.0;
 
+	public static final String SHOP_DB_NAME = "shop";
+	public static final String PRODUCT_COLLECTION_NAME = "product";
+
 	private static MongoServer server;
 	private static InetSocketAddress serverAddress;
 
@@ -54,10 +57,10 @@ public class ProductMongoRepositoryTest {
 	@Before
 	public void setup() {
 		client = new MongoClient(new ServerAddress(serverAddress));
-		MongoDatabase database = client.getDatabase(ProductMongoRepository.SHOP_DB_NAME);
+		MongoDatabase database = client.getDatabase(SHOP_DB_NAME);
 		database.drop();
-		productRepository = new ProductMongoRepository(client);
-		productCollection = database.getCollection(ProductMongoRepository.PRODUCT_COLLECTION_NAME);
+		productRepository = new ProductMongoRepository(client, SHOP_DB_NAME, PRODUCT_COLLECTION_NAME);
+		productCollection = database.getCollection(PRODUCT_COLLECTION_NAME);
 	}
 
 	@After

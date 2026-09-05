@@ -19,14 +19,13 @@ public class PurchaseMongoRepository implements PurchaseRepository {
 
 	public static final String CUSTOMER_ID_KEY = "customerId";
 	public static final String PRODUCT_ID_KEY = "productId";
-	public static final String SHOP_DB_NAME = "shop";
-	public static final String PURCHASE_COLLECTION_NAME = "purchase";
+
 	private MongoCollection<Document> purchaseCollection;
 
-	public PurchaseMongoRepository(MongoClient client) {
+	public PurchaseMongoRepository(MongoClient client, String databaseName, String collectionName) {
 		purchaseCollection = client
-			.getDatabase(SHOP_DB_NAME)
-			.getCollection(PURCHASE_COLLECTION_NAME);
+			.getDatabase(databaseName)
+			.getCollection(collectionName);
 		purchaseCollection.createIndex(
 				Indexes.ascending(CUSTOMER_ID_KEY, PRODUCT_ID_KEY),
 				new IndexOptions().unique(true));

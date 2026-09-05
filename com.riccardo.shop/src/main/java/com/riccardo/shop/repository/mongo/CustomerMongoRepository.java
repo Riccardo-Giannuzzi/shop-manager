@@ -19,14 +19,13 @@ public class CustomerMongoRepository implements CustomerRepository {
 
 	public static final String CUSTOMER_ID_KEY = "id";
 	public static final String CUSTOMER_NAME_KEY = "name";
-	public static final String SHOP_DB_NAME = "shop";
-	public static final String CUSTOMER_COLLECTION_NAME = "customer";
+
 	private MongoCollection<Document> customerCollection;
 
-	public CustomerMongoRepository(MongoClient client) {
+	public CustomerMongoRepository(MongoClient client, String databaseName, String collectionName) {
 		customerCollection = client
-			.getDatabase(SHOP_DB_NAME)
-			.getCollection(CUSTOMER_COLLECTION_NAME);
+			.getDatabase(databaseName)
+			.getCollection(collectionName);
 		customerCollection.createIndex(
 				Indexes.ascending(CUSTOMER_ID_KEY),
 				new IndexOptions().unique(true));

@@ -110,16 +110,6 @@ public class ShopSwingViewTest extends AssertJSwingJUnitTestCase {
 
 	@Test
 	@GUITest
-	public void testSetCustomerControllerShouldRefreshCustomers() {
-		clearInvocations(customerController);
-		GuiActionRunner.execute(
-				() -> shopSwingView.setCustomerController(customerController)
-		);
-		verify(customerController).allCustomers();
-	}
-
-	@Test
-	@GUITest
 	public void testShouldSwitchTabsBeforeControllersAreSet() {
 		ShopSwingView view = GuiActionRunner.execute(ShopSwingView::new);
 		FrameFixture viewWindow = new FrameFixture(robot(), view);

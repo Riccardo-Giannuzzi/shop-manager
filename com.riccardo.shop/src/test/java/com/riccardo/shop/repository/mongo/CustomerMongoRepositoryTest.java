@@ -31,6 +31,9 @@ public class CustomerMongoRepositoryTest {
 	private static final String CUSTOMER_ID_2 = "C2";
 	private static final String CUSTOMER_NAME_2 = "customer_2";
 
+	public static final String SHOP_DB_NAME = "shop";
+	public static final String CUSTOMER_COLLECTION_NAME = "customer";
+
 	private static MongoServer server;
 	private static InetSocketAddress serverAddress;
 
@@ -52,10 +55,10 @@ public class CustomerMongoRepositoryTest {
 	@Before
 	public void setup() {
 		client = new MongoClient(new ServerAddress(serverAddress));
-		MongoDatabase database = client.getDatabase(CustomerMongoRepository.SHOP_DB_NAME);
+		MongoDatabase database = client.getDatabase(SHOP_DB_NAME);
 		database.drop();
-		customerRepository = new CustomerMongoRepository(client);
-		customerCollection = database.getCollection(CustomerMongoRepository.CUSTOMER_COLLECTION_NAME);
+		customerRepository = new CustomerMongoRepository(client, SHOP_DB_NAME, CUSTOMER_COLLECTION_NAME);
+		customerCollection = database.getCollection(CUSTOMER_COLLECTION_NAME);
 	}
 
 	@After

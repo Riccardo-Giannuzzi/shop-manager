@@ -14,31 +14,39 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
 
-    <!-- Dependency and plugin versions -->
+    <!-- Dependency versions -->
     <junit.version>4.13.2</junit.version>
-    <jacoco.version>0.8.15</jacoco.version>
-    <coveralls.version>5.1.0</coveralls.version>
-    <sonar.version>5.7.0.6970</sonar.version>
-    <pitest.version>1.25.9</pitest.version>
-    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
-    <surefire-report.version>3.5.6</surefire-report.version>
     <assertj-swing.version>3.17.1</assertj-swing.version>
     <mockito.version>5.23.0</mockito.version>
     <mongodb-driver.version>3.12.14</mongodb-driver.version>
     <mongo-java-server.version>1.11.1</mongo-java-server.version>
     <testcontainers.version>1.21.4</testcontainers.version>
-    <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <mariadb-java-client.version>3.5.10</mariadb-java-client.version>
+    <cucumber.version>5.5.0</cucumber.version>
+    <picocli.version>4.7.7</picocli.version>
+    <log4j.version>2.24.3</log4j.version>
+
+    <!-- Plugin versions -->
+    <jacoco.version>0.8.15</jacoco.version>
+    <coveralls.version>5.1.0</coveralls.version>
+    <sonar.version>5.7.0.6970</sonar.version>
+    <pitest.version>1.25.9</pitest.version>
+    <maven-surefire.version>3.5.6</maven-surefire.version>
+    <surefire-report.version>3.5.6</surefire-report.version>
+    <maven-failsafe.version>3.5.6</maven-failsafe.version>
+    <build-helper-maven.version>3.6.1</build-helper-maven.version>
+    <maven-assembly.version>3.7.1</maven-assembly.version>
+    <docker-maven.version>0.48.1</docker-maven.version>
 
     <!-- JaCoCo exclusions -->
     <jacoco.exclusions>
-      com/riccardo/shop/model/*
+      com/riccardo/shop/model/*, com/riccardo/shop/app/swing/*
     </jacoco.exclusions>
 
     <!-- Sonar coverage exclusions -->
     <sonar.coverage.exclusions>
-      **/model/*.*
+      **/model/*.*,
+      **/app/swing/*.*
     </sonar.coverage.exclusions>
 
     <!-- Sonar exclusions -->
@@ -113,6 +121,33 @@
       <artifactId>mariadb-java-client</artifactId>
       <version>${mariadb-java-client.version}</version>
     </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>${picocli.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -171,7 +206,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven-surefire-plugin.version}</version>
+          <version>${maven-surefire.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-report-plugin</artifactId>
@@ -180,7 +215,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${build-helper-maven-plugin.version}</version>
+          <version>${build-helper-maven.version}</version>
           <executions>
             <execution>
               <id>add-test-source</id>
@@ -191,7 +226,22 @@
               <configuration>
                 <sources>
                   <source>src/it/java</source>
+                  <source>src/bdd/java</source>
                 </sources>
+              </configuration>
+            </execution>
+            <execution>
+              <id>add-test-resource</id>
+              <phase>generate-test-resources</phase>
+              <goals>
+                <goal>add-test-resource</goal>
+              </goals>
+              <configuration>
+                <resources>
+                  <resource>
+                    <directory>src/bdd/resources</directory>
+                  </resource>
+                </resources>
               </configuration>
             </execution>
           </executions>
@@ -199,7 +249,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${maven-failsafe-plugin.version}</version>
+          <version>${maven-failsafe.version}</version>
           <executions>
             <execution>
               <goals>
@@ -207,7 +257,32 @@
                 <goal>verify</goal>
               </goals>
             </execution>
+            <execution>
+              <id>bdd-tests</id>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <excludes>
+                  <exclude>**/*IT.java</exclude>
+                </excludes>
+                <includes>
+                  <include>**/*BDD.java</include>
+                </includes>
+              </configuration>
+            </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven-assembly.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>${docker-maven.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -219,6 +294,60 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <archive>
+                <manifest>
+                  <mainClass>com.riccardo.shop.app.swing.ShopSwingApp</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <configuration>
+          <images>
+            <image>
+              <name>mongo:5</name>
+              <run>
+                <ports>
+                  <port>27017:27017</port>
+                </ports>
+              </run>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>docker-start</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>docker-stop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

@@ -27,6 +27,9 @@ public class CustomerMongoRepositoryIT {
 	private static final String CUSTOMER_ID_2 = "C2";
 	private static final String CUSTOMER_NAME_2 = "customer_2";
 
+	public static final String SHOP_DB_NAME = "shop";
+	public static final String CUSTOMER_COLLECTION_NAME = "customer";
+
 	@ClassRule
 	public static final MongoDBContainer mongo = new MongoDBContainer("mongo:5");
 
@@ -40,10 +43,10 @@ public class CustomerMongoRepositoryIT {
 				new ServerAddress(
 						mongo.getHost(),
 						mongo.getFirstMappedPort()));
-		MongoDatabase database = client.getDatabase(CustomerMongoRepository.SHOP_DB_NAME);
+		MongoDatabase database = client.getDatabase(SHOP_DB_NAME);
 		database.drop();
-		customerRepository = new CustomerMongoRepository(client);
-		customerCollection = database.getCollection(CustomerMongoRepository.CUSTOMER_COLLECTION_NAME);
+		customerRepository = new CustomerMongoRepository(client, SHOP_DB_NAME, CUSTOMER_COLLECTION_NAME);
+		customerCollection = database.getCollection(CUSTOMER_COLLECTION_NAME);
 	}
 
 	@After
