@@ -32,7 +32,7 @@
     <sonar.version>5.7.0.6970</sonar.version>
     <pitest.version>1.25.9</pitest.version>
     <maven-surefire.version>3.5.6</maven-surefire.version>
-    <surefire-report.version>3.5.6</surefire-report.version>
+    <surefire-report.version>3.6.0</surefire-report.version>
     <maven-failsafe.version>3.5.6</maven-failsafe.version>
     <build-helper-maven.version>3.6.1</build-helper-maven.version>
     <maven-assembly.version>3.7.1</maven-assembly.version>
