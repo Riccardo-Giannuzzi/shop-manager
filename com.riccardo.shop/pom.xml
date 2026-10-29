@@ -27,7 +27,7 @@
     <log4j.version>2.24.3</log4j.version>
 
     <!-- Plugin versions -->
-    <jacoco.version>0.8.15</jacoco.version>
+    <jacoco.version>0.8.16</jacoco.version>
     <coveralls.version>5.1.0</coveralls.version>
     <sonar.version>5.7.0.6970</sonar.version>
     <pitest.version>1.25.9</pitest.version>
